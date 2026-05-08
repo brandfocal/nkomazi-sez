@@ -1,36 +1,28 @@
-import { useMemo } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { useMemo, useEffect } from 'react';
 import { Container, Theme } from './settings/types';
 import { AirCargoPage } from './components/generated/AirCargoPage';
+import { Home2Page } from './components/generated/Home2Page';
 
 let theme: Theme = 'light';
-// only use 'centered' container for standalone components, never for full page apps or websites.
-let container: Container = 'none';
 
 function App() {
-  function setTheme(theme: Theme) {
+  useEffect(() => {
     if (theme === 'dark') {
       document.documentElement.classList.add('dark');
     } else {
       document.documentElement.classList.remove('dark');
     }
-  }
-
-  setTheme(theme);
-
-  const generatedComponent = useMemo(() => {
-    // THIS IS WHERE THE TOP LEVEL GENRATED COMPONENT WILL BE RETURNED!
-    return <AirCargoPage />;
   }, []);
 
-  if (container === 'centered') {
-    return (
-      <div className="h-full w-full flex flex-col items-center justify-center">
-        {generatedComponent}
-      </div>
-    );
-  } else {
-    return generatedComponent;
-  }
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<AirCargoPage />} />
+        <Route path="/home2" element={<Home2Page />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 export default App;
