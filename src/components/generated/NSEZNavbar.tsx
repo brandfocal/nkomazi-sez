@@ -3,20 +3,20 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, X, Menu } from 'lucide-react';
 const NAV_LINKS = [{
   id: 'nav-invest',
-  label: 'Invest',
-  section: 'invest'
+  label: 'Investor Hub',
+  href: '/investor-hub'
 }, {
   id: 'nav-business',
-  label: 'Business (SMME)',
-  section: 'smme'
+  label: 'Enterprise Hub',
+  href: '/enterprise-hub'
 }, {
   id: 'nav-media',
   label: 'Media',
   section: 'media'
 }, {
   id: 'nav-careers',
-  label: 'Careers',
-  section: 'careers'
+  label: 'Careers & Community',
+  href: '/careers'
 }, {
   id: 'nav-oss',
   label: 'One-Stop-Shop',
@@ -96,7 +96,7 @@ export function NSEZNavbar() {
         boxSizing: 'border-box'
       }} role="navigation" aria-label="Main navigation">
           {/* Logo */}
-          <a href="#" onClick={e => e.preventDefault()} className="flex-shrink-0 flex items-center no-underline" aria-label="Nkomazi SEZ – Home">
+          <a href="/" className="flex-shrink-0 flex items-center no-underline" aria-label="Nkomazi SEZ – Home">
             <img src="/nsez-logo-white.png" alt="Nkomazi SEZ" className="h-12 w-auto object-contain max-w-none" />
           </a>
 
@@ -112,7 +112,9 @@ export function NSEZNavbar() {
             {NAV_LINKS.map(link => {
             const isActive = activeLinkId === link.id;
             return <li key={link.id}>
-                  <a href="#" onClick={e => e.preventDefault()} style={{
+                  <a href={link.href || "#"} onClick={e => {
+                if (!link.href) e.preventDefault();
+              }} style={{
                 display: 'inline-block',
                 color: isActive ? '#ED8E0B' : 'rgba(255,255,255,0.55)',
                 fontSize: '11px',
@@ -261,8 +263,8 @@ export function NSEZNavbar() {
           gap: '4px'
         }}>
               {NAV_LINKS.map(link => <li key={link.id}>
-                  <a href="#" onClick={e => {
-              e.preventDefault();
+                  <a href={link.href || "#"} onClick={e => {
+              if (!link.href) e.preventDefault();
               setMobileOpen(false);
             }} style={{
               display: 'block',

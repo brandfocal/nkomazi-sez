@@ -11,7 +11,13 @@ const NAV_SECTORS = ['Agro-processing', 'Manufacturing', 'Logistics & Warehousin
 const NAV_INVESTORS = ['Investment Guide', 'Incentives', 'Land Allocation', 'Permits & Licensing', 'Contact Desk'];
 const NAV_BUSINESS = ['Business Setup', 'Industrial Zones', 'Factory Shells', 'Supply Chains', 'Trade Partners'];
 const NAV_PROGRESS = ['Development Updates', 'Phase Milestones', 'Impact Reports', 'Job Creation', 'Infrastructure'];
-const PARTNER_LOGOS = ['https://cdn.prod.website-files.com/6891d538bffa36dd46a28858/689c5f416e743c7d279d3ddc_brand-logo-1.svg', 'https://cdn.prod.website-files.com/6891d538bffa36dd46a28858/689c5f410888495430d95ff6_brand-logo-2.svg', 'https://cdn.prod.website-files.com/6891d538bffa36dd46a28858/689c5f41780865058469cbf2_brand-logo-3.svg', 'https://cdn.prod.website-files.com/6891d538bffa36dd46a28858/689c5f41c24f55ef9ae454fb_brand-logo-4.svg', 'https://cdn.prod.website-files.com/6891d538bffa36dd46a28858/689c5f41feb6ab910658c22f_brand-logo-5.svg'];
+const PARTNER_LOGOS = [
+  '/partners/dp-world.png',
+  '/partners/dtic.png',
+  '/partners/economic-development-tourism.png',
+  '/partners/ehlanzeni-district-municipality.png',
+  '/partners/nkomazi-local-municipality.png'
+];
 
 // Sector-specific hero images cycling through agro → manufacturing → logistics
 const HERO_BG_IMAGES = ['https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1800&q=85',
@@ -583,13 +589,19 @@ const StickyNav = ({
         ease: 'easeInOut'
       }}>
           {/* ── Logo: Nkomazi SEZ image ── */}
-          <a href="#" onClick={e => e.preventDefault()} className="flex-shrink-0 flex items-center no-underline">
+          <a href="/" className="flex-shrink-0 flex items-center no-underline">
             <img src="/nsez-logo-white.png" alt="Nkomazi SEZ" className="h-12 w-auto object-contain max-w-none" />
           </a>
           <div className="hidden lg:flex items-center gap-0 backdrop-blur-[26px] bg-white/10 border border-white/20 rounded-xl p-[4.6px]">
-            <DropdownMenu label="Invest" items={NAV_INVESTORS} />
-            <DropdownMenu label="Business" items={NAV_BUSINESS} />
-            <DropdownMenu label="Progress" items={NAV_PROGRESS} />
+            <a href="/investor-hub" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 transition-all duration-300 no-underline tracking-[0.01em]" style={{
+            fontFamily: BODY_FONT
+          }}>Investor Hub</a>
+            <a href="/enterprise-hub" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 transition-all duration-300 no-underline tracking-[0.01em]" style={{
+            fontFamily: BODY_FONT
+          }}>Enterprise Hub</a>
+            <a href="/careers" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 transition-all duration-300 no-underline tracking-[0.01em]" style={{
+            fontFamily: BODY_FONT
+          }}>Careers & Community</a>
             <a href="#" onClick={e => e.preventDefault()} className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 transition-all duration-300 no-underline tracking-[0.01em]" style={{
             fontFamily: BODY_FONT
           }}>Compliance Portal</a>
@@ -616,25 +628,18 @@ const StickyNav = ({
         duration: 0.25
       }} className="relative lg:hidden mt-2 rounded-2xl bg-[#0F2419]/95 backdrop-blur-md overflow-hidden">
             <div className="p-4 flex flex-col gap-2">
-              {['Compliance Portal'].map(l => <a key={l} href="#" onClick={e => e.preventDefault()} className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 no-underline" style={{
+              <a href="/investor-hub" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 no-underline" style={{
             fontFamily: BODY_FONT
-          }}>{l}</a>)}
-              <div className="border-t border-white/10 pt-2 mt-1">
-                <p className="text-white/40 text-xs font-semibold px-3 pb-1 uppercase tracking-widest" style={{
-              fontFamily: BODY_FONT
-            }}>Invest</p>
-                {NAV_INVESTORS.map(s => <a key={s} href="#" onClick={e => e.preventDefault()} className="block text-white/80 text-sm rounded-lg px-3 py-2 hover:bg-white/10 no-underline" style={{
-              fontFamily: BODY_FONT
-            }}>{s}</a>)}
-              </div>
-              <div className="border-t border-white/10 pt-2 mt-1">
-                <p className="text-white/40 text-xs font-semibold px-3 pb-1 uppercase tracking-widest" style={{
-              fontFamily: BODY_FONT
-            }}>Business</p>
-                {NAV_BUSINESS.map(s => <a key={s} href="#" onClick={e => e.preventDefault()} className="block text-white/80 text-sm rounded-lg px-3 py-2 hover:bg-white/10 no-underline" style={{
-              fontFamily: BODY_FONT
-            }}>{s}</a>)}
-              </div>
+          }}>Investor Hub</a>
+              <a href="/enterprise-hub" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 no-underline" style={{
+            fontFamily: BODY_FONT
+          }}>Enterprise Hub</a>
+              <a href="/careers" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 no-underline" style={{
+            fontFamily: BODY_FONT
+          }}>Careers & Community</a>
+              <a href="#" onClick={e => e.preventDefault()} className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 no-underline" style={{
+            fontFamily: BODY_FONT
+          }}>Compliance Portal</a>
               <div className="pt-2"><GreenButton label="Invest Now" /></div>
             </div>
           </motion.div>}
@@ -714,7 +719,7 @@ const VideoHero = () => {
       <motion.div className="relative z-10 max-w-[1372px] mx-auto w-full px-8 pb-28 pt-40" style={{
       opacity
     }}>
-        <motion.div className="max-w-[680px] flex flex-col gap-9" initial={{
+        <motion.div className="max-w-[1200px] w-full flex flex-col gap-9" initial={{
         opacity: 0,
         y: 50
       }} animate={{
@@ -725,40 +730,27 @@ const VideoHero = () => {
         delay: 0.2,
         ease: [0.22, 1, 0.36, 1]
       }}>
-          <div className="flex flex-col gap-5">
-            <motion.div initial={{
-            opacity: 0,
-            x: -24
-          }} animate={{
-            opacity: 1,
-            x: 0
-          }} transition={{
-            duration: 0.7,
-            delay: 0.45,
-            ease: 'easeOut'
-          }} className="flex items-center gap-3">
-              <div className="w-8 h-px bg-[#C8A84B]" />
-              <AnimatePresence mode="wait">
-                <motion.span key={activeImg} initial={{
-                opacity: 0,
-                x: -8
-              }} animate={{
-                opacity: 1,
-                x: 0
-              }} exit={{
-                opacity: 0,
-                x: 8
-              }} transition={{
-                duration: 0.35
-              }} className="text-[#C8A84B] text-xs font-medium tracking-[0.16em] uppercase" style={{
-                fontFamily: BODY_FONT
-              }}>
-                  {HERO_SECTOR_LABELS[activeImg]} · Mpumalanga, South Africa
-                </motion.span>
-              </AnimatePresence>
-            </motion.div>
+          <div className="flex flex-col items-start gap-5">
+            <AnimatePresence mode="wait">
+              <motion.span key={activeImg} initial={{
+              opacity: 0,
+              y: 8
+            }} animate={{
+              opacity: 1,
+              y: 0
+            }} exit={{
+              opacity: 0,
+              y: -8
+            }} transition={{
+              duration: 0.35
+            }} className="inline-block bg-[#1A3C2E] text-white text-xs rounded-full px-3 py-2 leading-[21px] tracking-[0.06em] uppercase" style={{
+              fontFamily: BODY_FONT
+            }}>
+                {HERO_SECTOR_LABELS[activeImg]} · Mpumalanga, South Africa
+              </motion.span>
+            </AnimatePresence>
 
-            <h1 className="text-white m-0 font-light" style={{
+            <h1 className="text-white m-0 font-light max-w-[1000px]" style={{
             fontSize: 'clamp(38px, 5vw, 68px)',
             letterSpacing: '-2.5px',
             lineHeight: '1.12',
@@ -767,7 +759,7 @@ const VideoHero = () => {
               Africa's premier Special Economic Zone for sustainable growth
             </h1>
 
-            <p className="text-white/70 text-[17px] font-normal leading-[1.78] m-0 max-w-[520px]" style={{
+            <p className="text-white/70 text-[17px] font-normal leading-[1.78] m-0 max-w-[620px]" style={{
             fontFamily: BODY_FONT
           }}>
               Strategically located on the N4 Maputo Development Corridor — unlock world-class incentives, infrastructure, and market access in the heart of Southern Africa.
@@ -1808,8 +1800,7 @@ export const AirCargoPage = () => {
           width: 'max-content'
         }}>
             {[...PARTNER_LOGOS, ...PARTNER_LOGOS, ...PARTNER_LOGOS].map((src, i) => <img key={i} src={src} alt="Partner Logo" className="block max-h-12 flex-shrink-0" style={{
-            maxWidth: '160px',
-            filter: 'saturate(0) brightness(0.4)'
+            maxWidth: '160px'
           }} />)}
           </motion.div>
           <div className="pointer-events-none absolute inset-y-0 left-0 right-0" style={{

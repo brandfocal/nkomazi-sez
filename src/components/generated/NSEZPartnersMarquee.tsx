@@ -5,27 +5,33 @@ type PartnerLogo = {
   src: string;
   alt: string;
 };
-const PARTNER_LOGOS: PartnerLogo[] = [{
-  id: 'partner-dtic',
-  src: 'https://cdn.prod.website-files.com/696e1a231b607dae06243d7c/6974599ea2e165f81c6dc891_partners-icon-05.svg',
-  alt: 'DTIC — Department of Trade, Industry and Competition'
-}, {
-  id: 'partner-sefa',
-  src: 'https://cdn.prod.website-files.com/696e1a231b607dae06243d7c/6974599e250d8c55d862a964_partners-icon-09.svg',
-  alt: 'SEFA — Small Enterprise Finance Agency'
-}, {
-  id: 'partner-idc',
-  src: 'https://cdn.prod.website-files.com/696e1a231b607dae06243d7c/6974599e543906c14f7dff5f_partners-icon-07.svg',
-  alt: 'IDC — Industrial Development Corporation'
-}, {
-  id: 'partner-dbsa',
-  src: 'https://cdn.prod.website-files.com/696e1a231b607dae06243d7c/6974599ef2851b324392b8c7_partners-icon-08.svg',
-  alt: 'DBSA — Development Bank of Southern Africa'
-}, {
-  id: 'partner-edd',
-  src: 'https://cdn.prod.website-files.com/696e1a231b607dae06243d7c/6974599e4ac837916a945bdf_partners-icon-06.svg',
-  alt: 'EDD — Economic Development Department'
-}];
+const PARTNER_LOGOS: PartnerLogo[] = [
+  {
+    id: 'partner-dp-world',
+    src: '/partners/dp-world.png',
+    alt: 'DP World'
+  },
+  {
+    id: 'partner-dtic',
+    src: '/partners/dtic.png',
+    alt: 'DTIC'
+  },
+  {
+    id: 'partner-ed',
+    src: '/partners/economic-development-tourism.png',
+    alt: 'Economic Development and Tourism'
+  },
+  {
+    id: 'partner-ehlanzeni',
+    src: '/partners/ehlanzeni-district-municipality.png',
+    alt: 'Ehlanzeni District Municipality'
+  },
+  {
+    id: 'partner-nkomazi',
+    src: '/partners/nkomazi-local-municipality.png',
+    alt: 'Nkomazi Local Municipality'
+  }
+];
 const SPEED = 40;
 const GAP = 48;
 function MarqueeTrack() {
