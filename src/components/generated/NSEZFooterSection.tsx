@@ -25,6 +25,7 @@ type AnnouncementItem = {
 type FooterLink = {
   id: string;
   label: string;
+  href?: string;
 };
 type ContactItem = {
   id: string;
@@ -105,25 +106,30 @@ const ANNOUNCEMENTS: AnnouncementItem[] = [{
 }];
 const FOOTER_LINKS: FooterLink[] = [{
   id: 'fl-invest',
-  label: 'Invest'
+  label: 'Invest',
+  href: '/investor-hub'
 }, {
   id: 'fl-business',
-  label: 'Business (SMME)'
+  label: 'Business (SMME)',
+  href: '/enterprise-hub'
 }, {
   id: 'fl-media',
   label: 'Media'
 }, {
   id: 'fl-careers',
-  label: 'Careers'
+  label: 'Careers',
+  href: '/careers'
 }, {
   id: 'fl-oss',
-  label: 'One-Stop-Shop'
+  label: 'One-Stop-Shop',
+  href: '/compliance-portal'
 }, {
   id: 'fl-about',
   label: 'About NSEZ'
 }, {
   id: 'fl-contact',
-  label: 'Contact'
+  label: 'Contact',
+  href: '/contact'
 }, {
   id: 'fl-tenders',
   label: 'Tenders'
@@ -1224,7 +1230,9 @@ export function NSEZFooterSection() {
               rowGap: '12px'
             }}>
                 {FOOTER_LINKS.map((link, lIdx) => <motion.li key={link.id} custom={lIdx} initial="hidden" animate={isFooterInView ? 'visible' : 'hidden'} variants={footerLinkVariants}>
-                    <motion.a href="#" onClick={e => e.preventDefault()} whileHover={{
+                    <motion.a href={link.href || "#"} onClick={e => {
+                      if (!link.href) e.preventDefault();
+                    }} whileHover={{
                   x: 5,
                   color: '#FFFFFF'
                 }} transition={{

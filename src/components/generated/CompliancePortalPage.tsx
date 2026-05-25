@@ -3,6 +3,8 @@ import { motion, AnimatePresence, useScroll, useTransform, useInView } from 'fra
 import { ArrowRight, ArrowUpRight, ChevronRight, ChevronUp, Download, FileText, CheckCircle2, BarChart3, Users, Mail, MapPin, Menu, X, Plus, ShieldCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
+const BODY_FONT = "'DM Sans', system-ui, sans-serif";
+
 // --- Types ---
 
 interface CardProps {
@@ -293,7 +295,7 @@ const StickyNav = () => {
     y: -100
   }} animate={{
     y: 0
-  }} className={cn("fixed top-0 left-0 right-0 z-[9999] transition-all duration-500 font-['DM_Sans']", isScrolled ? "pt-0 bg-[#0F2419]/96 backdrop-blur-[20px] border-b border-[#C8A84B]/20" : "pt-4 sm:pt-5 px-4 sm:px-6")}>
+  }} className={cn("fixed top-0 left-0 right-0 z-[9999] transition-all duration-500", isScrolled ? "pt-0 bg-[#0F2419]/96 backdrop-blur-[20px] border-b border-[#C8A84B]/20" : "pt-4 sm:pt-5 px-4 sm:px-6")} style={{ fontFamily: BODY_FONT }}>
       <div className={cn("max-w-[1372px] mx-auto flex justify-between items-center transition-all duration-500", isScrolled ? "py-3 px-4 sm:px-6" : "py-0")}>
         <div className="flex items-center min-w-0">
           <a href="/" className="flex-shrink-0 flex items-center no-underline min-w-0">
@@ -301,15 +303,13 @@ const StickyNav = () => {
           </a>
         </div>
 
-        <div className="hidden lg:flex items-center gap-1">
-          <div className="bg-white/10 border border-white/20 rounded-xl p-[4.6px] flex items-center gap-1 backdrop-blur-md">
-            {navItems.map(item => <a key={item.label} href={item.href} className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 transition-colors no-underline">
-                {item.label}
-              </a>)}
-            <a href="/compliance-portal" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 bg-white/10 border border-white/20 transition-colors no-underline">
-              Compliance Portal
-            </a>
-          </div>
+        <div className="hidden lg:flex items-center gap-0 backdrop-blur-[26px] bg-white/10 border border-white/20 rounded-xl p-[4.6px]">
+          {navItems.map(item => <a key={item.label} href={item.href} className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 transition-all duration-300 no-underline tracking-[0.01em]" style={{
+          fontFamily: BODY_FONT
+        }}>{item.label}</a>)}
+          <a href="/compliance-portal" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 bg-white/10 border border-white/20 hover:bg-white/10 transition-all duration-300 no-underline tracking-[0.01em]" style={{
+          fontFamily: BODY_FONT
+        }}>Compliance Portal</a>
         </div>
 
         <div className="flex items-center gap-3 sm:gap-4 shrink-0">
@@ -332,10 +332,10 @@ const StickyNav = () => {
         opacity: 0
       }} className="lg:hidden bg-[#0F2419] border-t border-white/10 overflow-hidden">
             <div className="px-4 sm:px-6 py-6 flex flex-col gap-4">
-              {navItems.map(item => <a key={item.label} href={item.href} className="text-white text-lg font-medium py-2 border-b border-white/5 no-underline">
+              {navItems.map(item => <a key={item.label} href={item.href} className="text-white text-lg font-medium py-2 border-b border-white/5 no-underline" style={{ fontFamily: BODY_FONT }}>
                   {item.label}
                 </a>)}
-              <a href="/compliance-portal" className="text-white text-lg font-medium py-2 border-b border-white/5 no-underline">
+              <a href="/compliance-portal" className="text-white text-lg font-medium py-2 border-b border-white/5 no-underline bg-white/10 px-3 rounded-lg" style={{ fontFamily: BODY_FONT }}>
                 Compliance Portal
               </a>
               <SplitButton label="Invest Now" variant="green" className="mt-4 w-full" />
@@ -396,7 +396,7 @@ const Footer = () => {
               <h3 className="text-white text-[28px] sm:text-[32px] md:text-[40px] font-light tracking-[-1px] font-['Inter']">
                 Ready to invest in Nkomazi?
               </h3>
-              <SplitButton label="Contact our investment desk" variant="green" className="w-fit" />
+              <SplitButton label="Contact our investment desk" variant="green" className="w-fit" onClick={() => window.location.href = '/contact'} />
             </div>
           </div>
 
@@ -794,7 +794,7 @@ export const CompliancePortalPage = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-  return <div className="bg-[#0F2419] min-h-screen text-[#0F2419] overflow-x-hidden selection:bg-[#C8A84B] selection:text-[#0F2419]">
+  return <div className="bg-[#0F2419] min-h-screen text-[#0F2419] overflow-x-hidden selection:bg-[#C8A84B] selection:text-[#0F2419]" style={{ fontFamily: BODY_FONT }}>
       <StickyNav />
       
       <AnimatePresence>

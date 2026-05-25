@@ -180,12 +180,14 @@ const SplitButton = ({
   label,
   variant = 'green',
   className = "",
-  icon: Icon = ArrowRight
+  icon: Icon = ArrowRight,
+  onClick
 }: {
   label: string;
   variant?: 'green' | 'gold' | 'white';
   className?: string;
   icon?: React.ElementType;
+  onClick?: () => void;
 }) => {
   const bgClass = variant === 'green' ? 'bg-[#1A3C2E]' : variant === 'gold' ? 'bg-[#C8A84B]' : 'bg-white';
   const textClass = variant === 'green' ? 'text-white' : 'text-[#0F2419]';
@@ -193,7 +195,7 @@ const SplitButton = ({
   return <motion.button whileHover={{
     y: -2,
     scale: 1.015
-  }} className={`group flex h-[44px] items-stretch no-underline relative overflow-hidden rounded-lg cursor-pointer ${className}`}>
+  }} onClick={onClick} className={`group flex h-[44px] items-stretch no-underline relative overflow-hidden rounded-lg cursor-pointer ${className}`}>
       <div className={`flex items-center justify-center px-5 ${bgClass} ${textClass} text-[15px] font-medium rounded-l-lg tracking-[0.01em]`} style={{
       fontFamily: BODY_FONT
     }}>
@@ -362,7 +364,7 @@ export const CommunityPortalPage = () => {
             <a href="/enterprise-hub" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 transition-all duration-300 no-underline tracking-[0.01em]" style={{
             fontFamily: BODY_FONT
           }}>Enterprise Hub</a>
-            <a href="/careers" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 transition-all duration-300 no-underline tracking-[0.01em]" style={{
+            <a href="/careers" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 bg-white/10 border border-white/20 hover:bg-white/10 transition-all duration-300 no-underline tracking-[0.01em]" style={{
             fontFamily: BODY_FONT
           }}>Careers & Community</a>
             <a href="/compliance-portal" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 transition-all duration-300 no-underline tracking-[0.01em]" style={{
@@ -398,7 +400,7 @@ export const CommunityPortalPage = () => {
                 <a href="/enterprise-hub" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 no-underline" style={{
               fontFamily: BODY_FONT
             }}>Enterprise Hub</a>
-                <a href="/careers" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 no-underline" style={{
+                <a href="/careers" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 bg-white/10 border border-white/20 hover:bg-white/10 no-underline" style={{
               fontFamily: BODY_FONT
             }}>Careers & Community</a>
                 <a href="/compliance-portal" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 no-underline" style={{
@@ -889,7 +891,7 @@ export const CommunityPortalPage = () => {
                 }}>
                     Ready to invest in Nkomazi?
                   </h2>
-                  <SplitButton label="Contact our investment desk" variant="green" />
+                  <SplitButton label="Contact our investment desk" variant="green" onClick={() => window.location.href = '/contact'} />
                 </div>
                 <div className="flex gap-4">
                   {SOCIAL_ICONS.map((Icon, i) => <motion.a key={`social-${i}`} href="#" whileHover={{

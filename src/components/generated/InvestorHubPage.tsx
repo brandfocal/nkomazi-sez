@@ -198,10 +198,15 @@ const DocIcon = () => <svg width="32" height="32" viewBox="0 0 32 32" fill="none
 // ─── Buttons ───────────────────────────────────────────────────────────────────
 
 const GreenButton = ({
-  label
+  label,
+  onClick
 }: {
   label: string;
-}) => <motion.a href="#" onClick={e => e.preventDefault()} className="group flex h-[44px] items-stretch no-underline relative overflow-hidden rounded-lg" whileHover={{
+  onClick?: () => void;
+}) => <motion.a href="#" onClick={e => {
+  e.preventDefault();
+  if (onClick) onClick();
+}} className="group flex h-[44px] items-stretch no-underline relative overflow-hidden rounded-lg" whileHover={{
   y: -2,
   scale: 1.015
 }} whileTap={{
@@ -482,7 +487,7 @@ const StickyNav = ({
             <img src="/nsez-logo-white.png" alt="Nkomazi SEZ" className="h-12 w-auto object-contain max-w-none" />
           </a>
           <div className="hidden lg:flex items-center gap-0 backdrop-blur-[26px] bg-white/10 border border-white/20 rounded-xl p-[4.6px]">
-            <a href="/investor-hub" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 transition-all duration-300 no-underline tracking-[0.01em]" style={{
+            <a href="/investor-hub" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 bg-white/10 border border-white/20 hover:bg-white/10 transition-all duration-300 no-underline tracking-[0.01em]" style={{
             fontFamily: BODY_FONT
           }}>Investor Hub</a>
             <a href="/enterprise-hub" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 transition-all duration-300 no-underline tracking-[0.01em]" style={{
@@ -517,7 +522,7 @@ const StickyNav = ({
         duration: 0.25
       }} className="relative lg:hidden mt-2 rounded-2xl bg-[#0F2419]/95 backdrop-blur-md overflow-hidden">
             <div className="p-4 flex flex-col gap-2">
-              <a href="/investor-hub" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 no-underline" style={{
+              <a href="/investor-hub" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 bg-white/10 border border-white/20 hover:bg-white/10 no-underline" style={{
             fontFamily: BODY_FONT
           }}>Investor Hub</a>
               <a href="/enterprise-hub" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 no-underline" style={{
@@ -1282,7 +1287,7 @@ const Footer = () => {
             }}>
                 Ready to invest in Nkomazi?
               </span>
-              <GreenButton label="Contact our investment desk" />
+              <GreenButton label="Contact our investment desk" onClick={() => window.location.href = '/contact'} />
             </div>
           </div>
           <div className="pt-5 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 lg:gap-4">

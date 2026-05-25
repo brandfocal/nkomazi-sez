@@ -99,16 +99,18 @@ const FadeUp = ({
   </motion.div>;
 const GreenButton = ({
   label,
-  className = ""
+  className = "",
+  onClick
 }: {
   label: string;
   className?: string;
+  onClick?: () => void;
 }) => <motion.button whileHover={{
   y: -2,
   scale: 1.015
 }} whileTap={{
   scale: 0.98
-}} className={`group flex h-[44px] items-stretch cursor-pointer relative ${className}`}>
+}} onClick={onClick} className={`group flex h-[44px] items-stretch cursor-pointer relative ${className}`}>
     <div className="flex items-center px-5 bg-[#1A3C2E] text-white text-[15px] font-medium rounded-l-lg transition-colors group-hover:bg-[#234d3b]" style={{
     fontFamily: BODY_FONT
   }}>
@@ -466,7 +468,7 @@ export const EnterpriseHubPage = () => {
             <a href="/investor-hub" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 transition-all duration-300 no-underline tracking-[0.01em]" style={{
             fontFamily: BODY_FONT
           }}>Investor Hub</a>
-            <a href="/enterprise-hub" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 transition-all duration-300 no-underline tracking-[0.01em]" style={{
+            <a href="/enterprise-hub" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 bg-white/10 border border-white/20 hover:bg-white/10 transition-all duration-300 no-underline tracking-[0.01em]" style={{
             fontFamily: BODY_FONT
           }}>Enterprise Hub</a>
             <a href="/careers" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 transition-all duration-300 no-underline tracking-[0.01em]" style={{
@@ -503,7 +505,7 @@ export const EnterpriseHubPage = () => {
                 <a href="/investor-hub" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 no-underline" style={{
               fontFamily: BODY_FONT
             }}>Investor Hub</a>
-                <a href="/enterprise-hub" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 no-underline" style={{
+                <a href="/enterprise-hub" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 bg-white/10 border border-white/20 hover:bg-white/10 no-underline" style={{
               fontFamily: BODY_FONT
             }}>Enterprise Hub</a>
                 <a href="/careers" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 no-underline" style={{
@@ -868,7 +870,7 @@ export const EnterpriseHubPage = () => {
               }}>
                   Ready to invest in Nkomazi?
                 </h2>
-                <GreenButton label="Contact our investment desk" />
+                <GreenButton label="Contact our investment desk" onClick={() => window.location.href = '/contact'} />
               </div>
             </div>
 
