@@ -602,7 +602,7 @@ const StickyNav = ({
             <a href="/careers" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 transition-all duration-300 no-underline tracking-[0.01em]" style={{
             fontFamily: BODY_FONT
           }}>Careers & Community</a>
-            <a href="#" onClick={e => e.preventDefault()} className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 transition-all duration-300 no-underline tracking-[0.01em]" style={{
+            <a href="/compliance-portal" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 transition-all duration-300 no-underline tracking-[0.01em]" style={{
             fontFamily: BODY_FONT
           }}>Compliance Portal</a>
           </div>
@@ -637,7 +637,7 @@ const StickyNav = ({
               <a href="/careers" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 no-underline" style={{
             fontFamily: BODY_FONT
           }}>Careers & Community</a>
-              <a href="#" onClick={e => e.preventDefault()} className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 no-underline" style={{
+              <a href="/compliance-portal" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 no-underline" style={{
             fontFamily: BODY_FONT
           }}>Compliance Portal</a>
               <div className="pt-2"><GreenButton label="Invest Now" /></div>

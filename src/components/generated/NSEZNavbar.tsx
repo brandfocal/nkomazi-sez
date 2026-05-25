@@ -20,7 +20,7 @@ const NAV_LINKS = [{
 }, {
   id: 'nav-oss',
   label: 'One-Stop-Shop',
-  section: 'oss'
+  href: '/compliance-portal'
 }];
 const LANGUAGES = [{
   id: 'lang-en',

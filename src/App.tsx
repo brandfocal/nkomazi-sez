@@ -6,6 +6,7 @@ import { Home2Page } from './components/generated/Home2Page';
 import { InvestorHubPage } from './components/generated/InvestorHubPage';
 import { EnterpriseHubPage } from './components/generated/EnterpriseHubPage';
 import { CommunityPortalPage } from './components/generated/CommunityPortalPage';
+import { CompliancePortalPage } from './components/generated/CompliancePortalPage';
 
 let theme: Theme = 'light';
 
@@ -26,6 +27,7 @@ function App() {
         <Route path="/investor-hub" element={<InvestorHubPage />} />
         <Route path="/enterprise-hub" element={<EnterpriseHubPage />} />
         <Route path="/careers" element={<CommunityPortalPage />} />
+        <Route path="/compliance-portal" element={<CompliancePortalPage />} />
       </Routes>
     </BrowserRouter>
   );
