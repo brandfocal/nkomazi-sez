@@ -1446,7 +1446,7 @@ const ZoneOverview = () => {
             }
           }} onAnimationComplete={() => {
             setWiping(false);
-            setPrevImg(null);
+            setPrevIdx(null);
           }} style={{
             backgroundImage: `url("${ZONE_CAROUSEL_IMAGES[carouselIdx].src}")`,
             backgroundSize: 'cover',
