@@ -3,6 +3,7 @@ import { useRef } from "react";
 import { motion, AnimatePresence, useScroll, useTransform, useInView } from "framer-motion";
 import { ArrowRight, ArrowUpRight, ChevronUp, Building2, Store, ShieldCheck, Users, Megaphone, MapPin, Mail, Clock, AlertTriangle, Menu, X, Instagram, Linkedin, Twitter, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { NSEZNavbar } from './NSEZNavbar';
 
 const BODY_FONT = "'DM Sans', system-ui, sans-serif";
 
@@ -267,85 +268,6 @@ const WhiteButton = ({
       <ArrowUpRight className="w-4 h-4 text-[#0F2419]" />
     </div>
   </motion.button>;
-const Navbar = () => {
-  const [scrolled, setScrolled] = React.useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
-  React.useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-  const navItems = [{
-    label: 'Investor Hub',
-    href: '/investor-hub'
-  }, {
-    label: 'Enterprise Hub',
-    href: '/enterprise-hub'
-  }, {
-    label: 'Careers & Community',
-    href: '/careers'
-  }];
-  return <motion.nav initial={{
-    y: -100,
-    opacity: 0
-  }} animate={{
-    y: 0,
-    opacity: 1
-  }} className={cn("fixed top-0 left-0 right-0 z-[9999] px-4 sm:px-6 transition-all duration-500", scrolled ? "pt-0" : "pt-5")} style={{ fontFamily: BODY_FONT }}>
-      <div className={cn("max-w-[1372px] mx-auto flex items-center justify-between transition-all duration-500 gap-3", scrolled ? "bg-[#0F2419]/96 backdrop-blur-[20px] px-4 sm:px-6 py-2 rounded-none border-b border-[#C8A84B]/20" : "py-2 px-0")}>
-        <div className="flex items-center shrink-0">
-          <a href="/" className="flex-shrink-0 flex items-center no-underline">
-            <img src="/nsez-logo-white.png" alt="NSEZ Logo" className="h-12 w-auto object-contain max-w-none" />
-          </a>
-        </div>
-
-        {/* Desktop Links */}
-        <div className="hidden lg:flex items-center gap-0 backdrop-blur-[26px] bg-white/10 border border-white/20 rounded-xl p-[4.6px]">
-          {navItems.map(item => <a key={item.label} href={item.href} className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 transition-all duration-300 no-underline tracking-[0.01em]">
-              {item.label}
-            </a>)}
-          <a href="/compliance-portal" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 transition-all duration-300 no-underline tracking-[0.01em]">
-            Compliance Portal
-          </a>
-        </div>
-
-        <div className="flex items-center gap-3 shrink-0">
-          <GreenButton label="Invest Now" className="hidden lg:flex" />
-          <button onClick={() => setMobileMenuOpen(true)} className="w-11 h-11 rounded-full bg-[#1A3C2E] flex items-center justify-center lg:hidden">
-            <Menu className="text-white w-5 h-5" />
-          </button>
-        </div>
-      </div>
-
-      {/* Mobile Menu */}
-      <AnimatePresence>
-        {mobileMenuOpen && <motion.div initial={{
-        opacity: 0,
-        y: -20
-      }} animate={{
-        opacity: 1,
-        y: 0
-      }} exit={{
-        opacity: 0,
-        y: -20
-      }} className="fixed inset-0 z-[10000] bg-[#0F2419] p-6 lg:hidden overflow-y-auto">
-            <div className="flex justify-between items-center mb-10">
-              <a href="/" className="flex-shrink-0 flex items-center no-underline">
-                <img src="/nsez-logo-white.png" alt="NSEZ Logo" className="h-8 w-auto object-contain" />
-              </a>
-              <button onClick={() => setMobileMenuOpen(false)} className="w-11 h-11 rounded-full bg-white/10 flex items-center justify-center">
-                <X className="text-white w-5 h-5" />
-              </button>
-            </div>
-            <div className="flex flex-col gap-6">
-              {navItems.map(item => <a key={item.label} href={item.href} className="text-white text-2xl font-heading font-light no-underline">{item.label}</a>)}
-              <a href="/compliance-portal" className="text-white text-2xl font-heading font-light no-underline">Compliance Portal</a>
-              <GreenButton label="Invest Now" className="mt-4 w-full" />
-            </div>
-          </motion.div>}
-      </AnimatePresence>
-    </motion.nav>;
-};
 const Footer = () => {
   return <footer className="w-full">
       <div className="bg-white">
@@ -365,7 +287,7 @@ const Footer = () => {
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-10 border-b border-white/10 pb-14 mb-8">
             <div className="flex flex-col gap-6">
               <a href="/" className="flex-shrink-0 flex items-center no-underline">
-                <img src="/nsez-logo-white.png" alt="NSEZ Logo" className="h-10 w-auto object-contain" />
+                <img src="/NSEZ-logo.jpg" alt="NSEZ Logo" className="h-10 w-auto object-contain rounded-md" />
               </a>
               <p className="text-white/40 text-[14px] font-body">
                 Copyright 2026 Nkomazi SEZ All Rights Reserved.
@@ -421,7 +343,7 @@ export const ContactPage = () => {
   const heroY = useTransform(heroScroll, [0, 1], ["0%", "28%"]);
   const heroOpacity = useTransform(heroScroll, [0, 1], [1, 0.4]);
   return <div className="bg-[#EFF0EB] min-h-screen selection:bg-[#C8A84B] selection:text-[#0F2419]" style={{ fontFamily: BODY_FONT }}>
-      <Navbar />
+      <NSEZNavbar />
 
       {/* Scroll to Top */}
       <AnimatePresence>

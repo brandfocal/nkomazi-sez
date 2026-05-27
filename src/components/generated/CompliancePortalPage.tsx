@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform, useInView } from 'framer-motion';
 import { ArrowRight, ArrowUpRight, ChevronRight, ChevronUp, Download, FileText, CheckCircle2, BarChart3, Users, Mail, MapPin, Menu, X, Plus, ShieldCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { NSEZNavbar } from './NSEZNavbar';
 
 const BODY_FONT = "'DM Sans', system-ui, sans-serif";
 
@@ -51,7 +52,7 @@ const SubtitlePill = ({
 }: {
   children: React.ReactNode;
   className?: string;
-}) => <div className={cn("inline-block bg-[#1A3C2E] text-white text-xs rounded-full px-3 py-2 leading-[21px] tracking-[0.06em] uppercase font-['DM_Sans']", className)}>
+}) => <div className={cn("inline-block bg-[#1A3C2E] text-white text-xs rounded-full px-3 py-2 leading-[21px] tracking-[0.06em] uppercase", className)}>
     {children}
   </div>;
 const AnimatedHeading = ({
@@ -156,7 +157,7 @@ const SplitButton = ({
   }} whileTap={{
     scale: 0.98
   }} className={cn("group flex h-[44px] items-stretch cursor-pointer", className)} onClick={onClick}>
-      <div className={cn("relative flex items-center px-5 rounded-l-lg font-medium text-[15px] tracking-[0.01em] overflow-hidden font-['DM_Sans']", currentStyle.main)}>
+      <div className={cn("relative flex items-center px-5 rounded-l-lg font-medium text-[15px] tracking-[0.01em] overflow-hidden", currentStyle.main)}>
         <span className="relative z-10">{label}</span>
         <div className="absolute inset-0 bg-white/10 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out" />
       </div>
@@ -190,7 +191,7 @@ const BenefitCard = ({
         <h3 className="text-white font-semibold text-[18px] sm:text-[22px] font-['Inter'] mb-2">
           {title}
         </h3>
-        <p className="text-white/65 text-[15px] sm:text-[16px] leading-relaxed font-['DM_Sans'] max-w-[90%]">
+        <p className="text-white/65 text-[15px] sm:text-[16px] leading-relaxed max-w-[90%]">
           {desc}
         </p>
       </div>
@@ -236,10 +237,10 @@ const ResourceCard = ({
     <h3 className="text-[#0F2419] font-semibold text-[18px] sm:text-[22px] mb-3 font-['Inter']">
       {title}
     </h3>
-    <p className="text-[#0F2419]/65 text-[15px] sm:text-[16px] leading-[1.65] mb-6 font-['DM_Sans'] flex-grow">
+    <p className="text-[#0F2419]/65 text-[15px] sm:text-[16px] leading-[1.65] mb-6 flex-grow">
       {desc}
     </p>
-    <a href="#" className="flex items-center text-[#C8A84B] text-[14px] font-medium font-['DM_Sans'] group">
+    <a href="#" className="flex items-center text-[#C8A84B] text-[14px] font-medium group">
       {linkText}
       <ArrowUpRight className="ml-1 w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
     </a>
@@ -261,7 +262,7 @@ const FeatureCard = ({
     <h3 className="text-[#0F2419] font-semibold text-[18px] sm:text-[22px] font-['Inter']">
       {title}
     </h3>
-    <p className="text-[#0F2419]/65 text-[15px] sm:text-[16px] leading-[1.65] font-['DM_Sans']">
+    <p className="text-[#0F2419]/65 text-[15px] sm:text-[16px] leading-[1.65]">
       {desc}
     </p>
     <div className="mt-2">
@@ -271,79 +272,6 @@ const FeatureCard = ({
 
 // --- Navigation & Footer ---
 
-const StickyNav = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-  const navItems = [{
-    label: 'Investor Hub',
-    href: '/investor-hub'
-  }, {
-    label: 'Enterprise Hub',
-    href: '/enterprise-hub'
-  }, {
-    label: 'Careers & Community',
-    href: '/careers'
-  }];
-  return <motion.nav initial={{
-    y: -100
-  }} animate={{
-    y: 0
-  }} className={cn("fixed top-0 left-0 right-0 z-[9999] transition-all duration-500", isScrolled ? "pt-0 bg-[#0F2419]/96 backdrop-blur-[20px] border-b border-[#C8A84B]/20" : "pt-4 sm:pt-5 px-4 sm:px-6")} style={{ fontFamily: BODY_FONT }}>
-      <div className={cn("max-w-[1372px] mx-auto flex justify-between items-center transition-all duration-500", isScrolled ? "py-3 px-4 sm:px-6" : "py-0")}>
-        <div className="flex items-center min-w-0">
-          <a href="/" className="flex-shrink-0 flex items-center no-underline min-w-0">
-            <img src="/nsez-logo-white.png" alt="NSEZ Logo" className="h-12 w-auto object-contain max-w-none" />
-          </a>
-        </div>
-
-        <div className="hidden lg:flex items-center gap-0 backdrop-blur-[26px] bg-white/10 border border-white/20 rounded-xl p-[4.6px]">
-          {navItems.map(item => <a key={item.label} href={item.href} className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 transition-all duration-300 no-underline tracking-[0.01em]" style={{
-          fontFamily: BODY_FONT
-        }}>{item.label}</a>)}
-          <a href="/compliance-portal" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 bg-white/10 border border-white/20 hover:bg-white/10 transition-all duration-300 no-underline tracking-[0.01em]" style={{
-          fontFamily: BODY_FONT
-        }}>Compliance Portal</a>
-        </div>
-
-        <div className="flex items-center gap-3 sm:gap-4 shrink-0">
-          <SplitButton label="Invest Now" variant="green" className="hidden lg:flex" />
-          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-[#1A3C2E] flex items-center justify-center text-white lg:hidden shrink-0">
-            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </button>
-        </div>
-      </div>
-
-      <AnimatePresence>
-        {mobileMenuOpen && <motion.div initial={{
-        height: 0,
-        opacity: 0
-      }} animate={{
-        height: 'auto',
-        opacity: 1
-      }} exit={{
-        height: 0,
-        opacity: 0
-      }} className="lg:hidden bg-[#0F2419] border-t border-white/10 overflow-hidden">
-            <div className="px-4 sm:px-6 py-6 flex flex-col gap-4">
-              {navItems.map(item => <a key={item.label} href={item.href} className="text-white text-lg font-medium py-2 border-b border-white/5 no-underline" style={{ fontFamily: BODY_FONT }}>
-                  {item.label}
-                </a>)}
-              <a href="/compliance-portal" className="text-white text-lg font-medium py-2 border-b border-white/5 no-underline bg-white/10 px-3 rounded-lg" style={{ fontFamily: BODY_FONT }}>
-                Compliance Portal
-              </a>
-              <SplitButton label="Invest Now" variant="green" className="mt-4 w-full" />
-            </div>
-          </motion.div>}
-      </AnimatePresence>
-    </motion.nav>;
-};
 const Footer = () => {
   const footerSections = [{
     title: "Invest",
@@ -361,7 +289,7 @@ const Footer = () => {
     title: "Media",
     links: ["Press Releases", "News and Insights"]
   }];
-  return <footer className="w-full font-['DM_Sans']">
+  return <footer className="w-full">
       <div className="bg-white pt-[60px] sm:pt-[115px] pb-16">
         <div className="max-w-[1372px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-8 sm:gap-[60px]">
@@ -386,7 +314,7 @@ const Footer = () => {
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8 sm:gap-12 border-b border-white/10 pb-12 mb-12">
             <div>
               <a href="/" className="flex-shrink-0 flex items-center no-underline">
-                <img src="/nsez-logo-white.png" alt="NSEZ Logo" className="h-10 sm:h-12 object-contain mb-6 sm:mb-8" />
+                <img src="/NSEZ-logo.jpg" alt="NSEZ Logo" className="h-10 sm:h-12 object-contain mb-6 sm:mb-8 rounded-md" />
               </a>
               <p className="text-white/40 text-[14px]">
                 Copyright 2026 Nkomazi SEZ All Rights Reserved.
@@ -440,7 +368,7 @@ const Hero = () => {
 
       <div className="relative z-10 px-6 py-10 sm:p-10 md:p-20 max-w-[1372px] mx-auto w-full">
         <FadeUp delay={0.1}>
-          <div className="text-white/60 text-[13px] uppercase tracking-[0.08em] font-['DM_Sans'] mb-6">
+          <div className="text-white/60 text-[13px] uppercase tracking-[0.08em] mb-6">
             ONE-STOP-SHOP - MPUMALANGA, SOUTH AFRICA
           </div>
         </FadeUp>
@@ -458,7 +386,7 @@ const Hero = () => {
         </AnimatedHeading>
 
         <FadeUp delay={0.4} className="mb-8 sm:mb-10 w-full sm:max-w-[540px]">
-          <p className="text-white/70 text-[15px] sm:text-[18px] leading-[1.65] font-['DM_Sans']">
+          <p className="text-white/70 text-[15px] sm:text-[18px] leading-[1.65]">
             Redefining regulatory efficiency by centralizing municipal, provincial, and national government approvals into a single coordinated digital interface for seamless business onboarding.
           </p>
         </FadeUp>
@@ -470,7 +398,7 @@ const Hero = () => {
 
         <div className="flex justify-between items-end border-t border-white/10 pt-8 sm:pt-10">
           <FadeUp delay={0.6}>
-            <div className="bg-white/10 border border-white/20 backdrop-blur-md rounded-full px-4 py-2 flex items-center gap-2 text-white/80 text-xs font-['DM_Sans']">
+            <div className="bg-white/10 border border-white/20 backdrop-blur-md rounded-full px-4 py-2 flex items-center gap-2 text-white/80 text-xs">
               <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               <span>Centralized - Government-backed - Est. 2024</span>
             </div>
@@ -523,7 +451,7 @@ const CentralizedServices = () => {
               Four integrated government service channels under one roof.
             </AnimatedHeading>
             <FadeUp delay={0.2} className="max-w-2xl">
-              <p className="text-[#0F2419]/70 text-[15px] sm:text-[17px] font-['DM_Sans'] leading-[1.65]">
+              <p className="text-[#0F2419]/70 text-[15px] sm:text-[17px] leading-[1.65]">
                 Every approval required to commence industrial operations in the Nkomazi SEZ is coordinated through a single submission desk eliminating multi-agency delays.
               </p>
             </FadeUp>
@@ -580,7 +508,7 @@ const OnboardingRoadmap = () => {
           </div>
 
           <FadeUp delay={0.4} className="mt-10 sm:mt-12 text-center">
-            <p className="text-white/40 text-[13px] font-['DM_Sans']">
+            <p className="text-white/40 text-[13px]">
               Hover each step to explore the approval pathway - Operational sign-off typically within <span className="font-bold text-[#C8A84B]">30 working days</span>
             </p>
           </FadeUp>
@@ -627,7 +555,7 @@ const IncentiveTracking = () => {
             Maintaining compliance to protect your fiscal incentives.
           </AnimatedHeading>
           <FadeUp delay={0.2} className="max-w-2xl">
-            <p className="text-[#0F2419]/70 text-[15px] sm:text-[17px] font-['DM_Sans'] leading-[1.65]">
+            <p className="text-[#0F2419]/70 text-[15px] sm:text-[17px] leading-[1.65]">
               Operational tenants use the NSEZ digital compliance dashboard to log ongoing performance metrics and protect their active SEZ fiscal benefit status.
             </p>
           </FadeUp>
@@ -642,7 +570,7 @@ const IncentiveTracking = () => {
               <div className="text-[24px] sm:text-[36px] md:text-[48px] font-light text-[#0F2419] font-['Inter'] leading-none mb-2">
                 {stat.value}
               </div>
-              <div className="text-[#0F2419]/70 text-[11px] sm:text-[13px] uppercase tracking-[0.06em] font-['DM_Sans'] max-w-[150px] mx-auto">
+              <div className="text-[#0F2419]/70 text-[11px] sm:text-[13px] uppercase tracking-[0.06em] max-w-[150px] mx-auto">
                 {stat.label}
               </div>
             </div>)}
@@ -674,7 +602,7 @@ const ResourceLibrary = () => {
               Official frameworks and technical compliance documents.
             </AnimatedHeading>
             <FadeUp delay={0.2} className="max-w-2xl">
-              <p className="text-[#0F2419]/70 text-[15px] sm:text-[17px] font-['DM_Sans'] leading-[1.65]">
+              <p className="text-[#0F2419]/70 text-[15px] sm:text-[17px] leading-[1.65]">
                 All regulatory reference materials required to prepare a compliant institutional application and maintain ongoing operational status within the zone.
               </p>
             </FadeUp>
@@ -714,7 +642,7 @@ const ContactSection = () => {
           once: true
         }} className="bg-[#1A3C2E] rounded-2xl p-6 sm:p-8 flex flex-col gap-6 sm:gap-8 shadow-xl">
             <div>
-              <div className="text-white/50 text-xs uppercase tracking-[0.06em] font-['DM_Sans'] mb-2">
+              <div className="text-white/50 text-xs uppercase tracking-[0.06em] mb-2">
                 Director: One-Stop-Shop Operations and Regulatory Vetting
               </div>
               <a href="mailto:oss@nsez.co.za" className="text-[#C8A84B] text-[20px] sm:text-[24px] md:text-[28px] font-medium font-['Inter'] hover:opacity-80 transition-opacity flex items-center gap-3 break-all">
@@ -725,7 +653,7 @@ const ContactSection = () => {
             
             <div className="flex items-start gap-3">
               <MapPin className="w-5 h-5 text-white/40 mt-1 shrink-0" />
-              <p className="text-white/65 text-[15px] sm:text-[16px] font-['DM_Sans'] leading-relaxed">
+              <p className="text-white/65 text-[15px] sm:text-[16px] leading-relaxed">
                 Office First Floor, One-Stop-Shop Centre,<br />
                 NSEZ Administration Precinct, Nkomazi, Mpumalanga
               </p>
@@ -754,7 +682,7 @@ const ContactSection = () => {
               "The NSEZ one-stop-shop consolidated what would have been a 14-month multi-agency process into a single 30-day digital submission. Our environmental and CIPC approvals arrived simultaneously."
             </blockquote>
             
-            <div className="text-white/50 text-sm font-['DM_Sans'] mb-8 sm:mb-10">
+            <div className="text-white/50 text-sm mb-8 sm:mb-10">
               Operations Director, International Logistics Group SA
             </div>
 
@@ -772,7 +700,7 @@ const ContactSection = () => {
                   <div className="text-[#C8A84B] text-[22px] sm:text-[24px] md:text-[28px] font-light font-['Inter'] leading-none mb-2">
                     {stat.val}
                   </div>
-                  <div className="text-white/60 text-[10px] uppercase tracking-[0.06em] font-['DM_Sans']">
+                  <div className="text-white/60 text-[10px] uppercase tracking-[0.06em]">
                     {stat.label}
                   </div>
                 </div>)}
@@ -795,7 +723,7 @@ export const CompliancePortalPage = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
   return <div className="bg-[#0F2419] min-h-screen text-[#0F2419] overflow-x-hidden selection:bg-[#C8A84B] selection:text-[#0F2419]" style={{ fontFamily: BODY_FONT }}>
-      <StickyNav />
+      <NSEZNavbar />
       
       <AnimatePresence>
         {showScrollTop && <motion.button initial={{

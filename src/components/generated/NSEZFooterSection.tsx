@@ -1090,7 +1090,7 @@ export function NSEZFooterSection() {
               alignItems: 'center',
               gap: '10px'
             }}>
-                <img src="/nsez-logo-white.png" alt="Nkomazi SEZ" className="h-12 w-auto object-contain max-w-none" />
+                <img src="/NSEZ-logo.jpg" alt="Nkomazi SEZ" className="h-12 w-auto object-contain max-w-none rounded-md" />
               </div>
 
               <p style={{

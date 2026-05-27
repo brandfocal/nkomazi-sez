@@ -30,6 +30,12 @@ type FilterRegion = {
   color: string;
   nodeIds: string[];
 };
+type TooltipData = {
+  name: string;
+  description: string;
+  x: number;
+  y: number;
+};
 
 // ─── Hub coordinates ──────────────────────────────────────────────────────────
 
@@ -627,6 +633,141 @@ const INSET_ROUTES = [{
   label: 'Blantyre'
 }];
 
+// ─── Corridor node data ───────────────────────────────────────────────────────
+
+const CORRIDOR_URBAN_NODES = [{
+  id: 'jhb',
+  label: 'Johannesburg',
+  cx: 190,
+  cy: 380,
+  description: 'Economic hub, N4 corridor origin',
+  labelPos: 'below' as const
+}, {
+  id: 'pta',
+  label: 'Pretoria',
+  cx: 220,
+  cy: 340,
+  description: 'Administrative capital, N1/N4 junction',
+  labelPos: 'below' as const
+}, {
+  id: 'mpt',
+  label: 'Maputo',
+  cx: 604,
+  cy: 318,
+  description: 'Port city, SADC gateway to the Indian Ocean',
+  labelPos: 'right' as const
+}];
+const CORRIDOR_TERTIARY_NODES = [{
+  id: 'mdb',
+  label: 'MIDDELBURG',
+  cx: 340,
+  cy: 310,
+  description: 'Coal & mining hub on the N4'
+}, {
+  id: 'wtb',
+  label: 'WITBANK',
+  cx: 290,
+  cy: 330,
+  description: 'eMalahleni - energy corridor node'
+}, {
+  id: 'nls',
+  label: 'NELSPRUIT',
+  cx: 460,
+  cy: 305,
+  description: 'Mbombela - Mpumalanga capital'
+}, {
+  id: 'wtr',
+  label: 'WHITE RIVER',
+  cx: 478,
+  cy: 282,
+  description: 'Agricultural processing centre'
+}, {
+  id: 'lyd',
+  label: 'LYDENBURG',
+  cx: 430,
+  cy: 258,
+  description: 'Mining & tourism gateway'
+}];
+const CORRIDOR_MAIN_TOWNS = [{
+  id: 'bel',
+  label: 'Belfast',
+  cx: 395,
+  cy: 295
+}, {
+  id: 'erm',
+  label: 'Ermelo',
+  cx: 370,
+  cy: 415
+}, {
+  id: 'mba',
+  label: 'Mbabane',
+  cx: 500,
+  cy: 390
+}, {
+  id: 'mzn',
+  label: 'Manzini',
+  cx: 525,
+  cy: 425
+}, {
+  id: 'pts',
+  label: 'Pietersburg',
+  cx: 260,
+  cy: 160
+}, {
+  id: 'tza',
+  label: 'Tzaneen',
+  cx: 340,
+  cy: 130
+}, {
+  id: 'pha',
+  label: 'Phalaborwa',
+  cx: 420,
+  cy: 110
+}, {
+  id: 'xai',
+  label: 'Xai-Xai',
+  cx: 605,
+  cy: 240
+}, {
+  id: 'pdo',
+  label: 'Ponta do Oura',
+  cx: 648,
+  cy: 400
+}];
+const CORRIDOR_PROVINCE_LABELS = [{
+  text: 'NORTH-WEST PROVINCE',
+  x: 60,
+  y: 120
+}, {
+  text: 'NORTHERN PROVINCE',
+  x: 320,
+  y: 80
+}, {
+  text: 'GAUTENG',
+  x: 170,
+  y: 340
+}, {
+  text: 'MPUMALANGA',
+  x: 380,
+  y: 260
+}, {
+  text: 'FREE STATE',
+  x: 200,
+  y: 460
+}, {
+  text: 'KWAZULU-NATAL',
+  x: 420,
+  y: 480
+}, {
+  text: 'SWAZILAND',
+  x: 560,
+  y: 400
+}, {
+  text: 'MOZAMBIQUE',
+  x: 680,
+  y: 280
+}];
+
 // ─── Arc helpers ──────────────────────────────────────────────────────────────
 
 function buildArc(x1: number, y1: number, x2: number, y2: number): string {
@@ -660,10 +801,12 @@ function bezierMid(x1: number, y1: number, cpx: number, cpy: number, x2: number,
   y: number;
 } {
   const x = (1 - t) * (1 - t) * x1 + 2 * (1 - t) * t * cpx + t * t * x2;
-  const y = (1 - t) * (1 - t) * y1 + 2 * (1 - t) * t * cpy + t * t * y2;
+  const y = (1 - t) * (1 - t) * y1 + 2 * (1 - t) * t * cpy + t * t * x2; // wait, let's fix a typo in original if any - wait, it had + t * t * y2.
+  // Actually let's write it mathematically correctly:
+  const y_correct = (1 - t) * (1 - t) * y1 + 2 * (1 - t) * t * cpy + t * t * y2;
   return {
     x,
-    y
+    y: y_correct
   };
 }
 function getArcMid(pathStr: string): {
@@ -827,9 +970,7 @@ const InsetPanel = ({
         fontFamily: BODY_FONT,
         fontSize: '8px',
         fontWeight: 700
-      }}>
-          N4 Corridor · Zoom
-        </span>
+      }}>N4 Corridor · Zoom</span>
         <div className="flex items-center gap-1">
           <div className="w-1.5 h-1.5 rounded-full bg-[#C8A84B] animate-pulse" />
           <span style={{
@@ -839,7 +980,6 @@ const InsetPanel = ({
         }}>LIVE</span>
         </div>
       </div>
-
       <svg viewBox="0 0 200 200" className="w-full" style={{
       display: 'block'
     }}>
@@ -856,7 +996,6 @@ const InsetPanel = ({
         <rect x="0" y="0" width="200" height="200" fill="url(#inset-spotlight)" />
         {[50, 100, 150].map(v => <line key={`ig-v${v}`} x1={v} y1={0} x2={v} y2={200} stroke="rgba(255,255,255,0.03)" strokeWidth="0.5" />)}
         {[50, 100, 150].map(v => <line key={`ig-h${v}`} x1={0} y1={v} x2={200} y2={v} stroke="rgba(255,255,255,0.03)" strokeWidth="0.5" />)}
-
         {inView && <>
             <motion.circle cx={100} cy={100} r={18} fill="none" stroke="#C8A84B" strokeWidth={0.5} strokeDasharray="3 5" animate={{
           r: [18, 34],
@@ -878,7 +1017,6 @@ const InsetPanel = ({
           repeatDelay: 1
         }} />
           </>}
-
         {INSET_ROUTES.map((r, i) => {
         const pathStr = buildArcSimple(r.from.x, r.from.y, r.to.x, r.to.y);
         const isHov = hoveredInset === r.label;
@@ -886,7 +1024,6 @@ const InsetPanel = ({
           transition: 'stroke 0.2s, stroke-width 0.2s'
         }} />;
       })}
-
         {INSET_NODES.filter(n => !n.isHub).map(n => <g key={n.id} style={{
         cursor: 'pointer'
       }} onMouseEnter={() => setHoveredInset(n.label)} onMouseLeave={() => setHoveredInset(null)}>
@@ -900,7 +1037,6 @@ const InsetPanel = ({
               {n.label}
             </text>
           </g>)}
-
         <motion.circle cx={100} cy={100} r={7} fill="#C8A84B" filter="url(#inset-glow)" animate={inView ? {
         scale: [1, 1.18, 1]
       } : {}} transition={{
@@ -913,20 +1049,15 @@ const InsetPanel = ({
         fontFamily: BODY_FONT,
         fontWeight: 700,
         letterSpacing: '0.05em'
-      }}>
-          NKOMAZI SEZ
-        </text>
+      }}>NKOMAZI SEZ</text>
       </svg>
-
       <div className="px-3 pb-2.5 flex items-center gap-1.5">
         <div className="w-2 h-px bg-[#C8A84B]" />
         <span style={{
         fontFamily: BODY_FONT,
         fontSize: '7px',
         color: 'rgba(255,255,255,0.35)'
-      }}>
-          Mpumalanga · South Africa
-        </span>
+      }}>Mpumalanga · South Africa</span>
       </div>
     </motion.div>;
 };
@@ -959,7 +1090,7 @@ const RegionFilterBar = ({
     }} className="relative flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold tracking-[0.05em] overflow-hidden" style={{
       fontFamily: BODY_FONT,
       border: `1px solid ${isActive ? region.color : 'rgba(255,255,255,0.12)'}`,
-      color: isActive ? region.id === 'all' ? '#0F2419' : '#0F2419' : 'rgba(255,255,255,0.55)',
+      color: isActive ? '#0F2419' : 'rgba(255,255,255,0.55)',
       background: isActive ? region.color : 'rgba(255,255,255,0.04)',
       transition: 'background 0.25s, border-color 0.25s, color 0.25s'
     }}>
@@ -979,6 +1110,248 @@ const RegionFilterBar = ({
   })}
   </motion.div>;
 
+// ─── Maputo Corridor Map ──────────────────────────────────────────────────────
+
+const MaputoCorridorMap = ({
+  inView
+}: {
+  inView: boolean;
+}) => {
+  const [tooltip, setTooltip] = useState<TooltipData | null>(null);
+  const svgRef = useRef<SVGSVGElement>(null);
+  const showTooltip = (name: string, description: string, cx: number, cy: number) => {
+    setTooltip({
+      name,
+      description,
+      x: cx,
+      y: cy
+    });
+  };
+  const hideTooltip = () => setTooltip(null);
+  return <div className="w-full relative">
+      <svg ref={svgRef} viewBox="0 0 900 580" preserveAspectRatio="xMidYMid meet" className="w-full" style={{
+      display: 'block',
+      background: '#0F2419'
+    }} aria-label="Maputo Development Corridor regional map">
+        <defs>
+          <filter id="corridor-glow" x="-150%" y="-150%" width="400%" height="400%">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+          </filter>
+          <filter id="node-glow" x="-100%" y="-100%" width="300%" height="300%">
+            <feGaussianBlur stdDeviation="2" result="blur" />
+            <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+          </filter>
+        </defs>
+
+        {/* Province Labels */}
+        {CORRIDOR_PROVINCE_LABELS.map(lbl => <text key={lbl.text} x={lbl.x} y={lbl.y} fontSize="22" fill="white" fillOpacity="0.12" fontFamily={BODY_FONT} textAnchor="start" style={{
+        textTransform: 'uppercase',
+        letterSpacing: '3px',
+        userSelect: 'none'
+      }}>
+            {lbl.text}
+          </text>)}
+
+        {/* Feeder links */}
+        <line x1={340} y1={310} x2={370} y2={415} stroke="white" strokeOpacity="0.3" strokeWidth="1" strokeDasharray="5 5" />
+        <line x1={220} y1={340} x2={160} y2={310} stroke="white" strokeOpacity="0.3" strokeWidth="1" strokeDasharray="5 5" />
+
+        {/* Sub-corridors */}
+        {/* North to Pietersburg/Tzaneen/Phalaborwa */}
+        <polyline points="220,340 260,160 340,130 420,110" fill="none" stroke="#3DBE6C" strokeWidth="2" />
+        {/* South to Mbabane/Manzini */}
+        <polyline points="460,305 500,390 525,425" fill="none" stroke="#3DBE6C" strokeWidth="2" />
+        {/* South toward KZN */}
+        <polyline points="190,380 180,460" fill="none" stroke="#3DBE6C" strokeWidth="2" />
+        {/* North toward Xai-Xai */}
+        <polyline points="542,308 605,240 620,180" fill="none" stroke="#3DBE6C" strokeWidth="2" />
+        {/* South Ponta do Oura */}
+        <polyline points="604,318 648,400" fill="none" stroke="#3DBE6C" strokeWidth="2" />
+
+        {/* Primary Corridor base */}
+        <polyline points="190,380 220,340 290,330 340,310 395,295 460,305 478,282 542,308 604,318" fill="none" stroke="#E8521A" strokeWidth="4" filter="url(#corridor-glow)" />
+
+        {/* Animated flow line */}
+        {inView && <motion.polyline points="190,380 220,340 290,330 340,310 395,295 460,305 478,282 542,308 604,318" fill="none" stroke="white" strokeOpacity="0.25" strokeWidth="3" strokeDasharray="12 8" animate={{
+        strokeDashoffset: [0, -40]
+      }} transition={{
+        duration: 2,
+        repeat: Infinity,
+        ease: 'linear'
+      }} />}
+
+        {/* Callout connector lines */}
+        <line x1={155} y1={290} x2={190} y2={340} stroke="rgba(255,255,255,0.3)" strokeWidth="0.8" />
+        <line x1={560} y1={95} x2={420} y2={110} stroke="rgba(255,255,255,0.3)" strokeWidth="0.8" />
+        <line x1={305} y1={398} x2={290} y2={330} stroke="rgba(255,255,255,0.3)" strokeWidth="0.8" />
+        <line x1={700} y1={178} x2={620} y2={180} stroke="rgba(255,255,255,0.3)" strokeWidth="0.8" />
+
+        {/* Callout boxes */}
+        <g>
+          <rect x={70} y={274} width={90} height={28} rx="3" fill="rgba(255,255,255,0.10)" stroke="rgba(255,255,255,0.25)" strokeWidth="1" />
+          <text x={115} y={292} textAnchor="middle" fontSize="9" fill="white" fontFamily={BODY_FONT}>Link with Platinum SDI</text>
+        </g>
+        <g>
+          <rect x={490} y={78} width={116} height={28} rx="3" fill="rgba(255,255,255,0.10)" stroke="rgba(255,255,255,0.25)" strokeWidth="1" />
+          <text x={548} y={96} textAnchor="middle" fontSize="9" fill="white" fontFamily={BODY_FONT}>Link with Phalaborwa SDI</text>
+        </g>
+        <g>
+          <rect x={240} y={386} width={130} height={28} rx="3" fill="rgba(255,255,255,0.10)" stroke="rgba(255,255,255,0.25)" strokeWidth="1" />
+          <text x={305} y={404} textAnchor="middle" fontSize="9" fill="white" fontFamily={BODY_FONT}>PETROCHEMICAL CLUSTER</text>
+        </g>
+        <g>
+          <rect x={638} y={160} width={142} height={28} rx="3" fill="rgba(255,255,255,0.10)" stroke="rgba(255,255,255,0.25)" strokeWidth="1" />
+          <text x={709} y={178} textAnchor="middle" fontSize="9" fill="white" fontFamily={BODY_FONT}>To Bande Gas Field / Inhambane</text>
+        </g>
+
+        {/* Compass Rose */}
+        <g>
+          <circle cx={60} cy={68} r={18} stroke="white" strokeOpacity="0.4" strokeWidth="1" fill="none" />
+          <line x1={60} y1={68} x2={60} y2={54} stroke="white" strokeOpacity="0.8" strokeWidth="1.5" />
+          <polygon points="60,50 57,58 63,58" fill="white" fillOpacity="0.9" />
+          <text x={60} y={46} textAnchor="middle" fontSize="10" fill="white" fillOpacity="0.9" fontFamily={BODY_FONT} fontWeight="700">N</text>
+        </g>
+
+        {/* Main towns */}
+        {CORRIDOR_MAIN_TOWNS.map(town => <g key={town.id} style={{
+        cursor: 'pointer'
+      }} onMouseEnter={() => showTooltip(town.label, 'Main town', town.cx, town.cy)} onMouseLeave={hideTooltip}>
+            <circle cx={town.cx} cy={town.cy} r={4} fill="white" fillOpacity="0.65" />
+            <text x={town.cx + 6} y={town.cy + 4} fontSize="9" fill="white" fillOpacity="0.8" fontFamily={BODY_FONT}>{town.label}</text>
+          </g>)}
+
+        {/* Tertiary nodes */}
+        {CORRIDOR_TERTIARY_NODES.map(node => <g key={node.id} style={{
+        cursor: 'pointer'
+      }} onMouseEnter={() => showTooltip(node.label, node.description, node.cx, node.cy)} onMouseLeave={hideTooltip}>
+            <circle cx={node.cx} cy={node.cy} r={6} fill="#3DBE6C" stroke="white" strokeWidth="1.5" />
+            <text x={node.cx} y={node.cy - 10} textAnchor="middle" fontSize="9" fill="white" fillOpacity="0.8" fontFamily={BODY_FONT}>{node.label}</text>
+          </g>)}
+
+        {/* Urban nodes */}
+        {CORRIDOR_URBAN_NODES.map(node => <g key={node.id} style={{
+        cursor: 'pointer'
+      }} onMouseEnter={() => showTooltip(node.label, node.description, node.cx, node.cy)} onMouseLeave={hideTooltip}>
+            <circle cx={node.cx} cy={node.cy} r={11} fill="#E8521A" stroke="white" strokeWidth="2" />
+            {node.labelPos === 'right' ? <text x={node.cx + 16} y={node.cy + 4} fontSize="10" fill="white" fillOpacity="0.85" fontFamily={BODY_FONT}>{node.label}</text> : <text x={node.cx} y={node.cy + 24} textAnchor="middle" fontSize="10" fill="white" fillOpacity="0.85" fontFamily={BODY_FONT}>{node.label}</text>}
+          </g>)}
+
+        {/* Nkomazi SEZ Hub */}
+        <g style={{
+        cursor: 'pointer'
+      }} onMouseEnter={() => showTooltip('Nkomazi SEZ', 'Special Economic Zone — Komatipoort, Mpumalanga', 542, 308)} onMouseLeave={hideTooltip}>
+          {/* Animated outer pulse */}
+          {inView && <motion.circle cx={542} cy={308} r={20} stroke="#C8A84B" strokeWidth={2} fill="none" animate={{
+          opacity: [1, 0.3]
+        }} transition={{
+          duration: 1.5,
+          repeat: Infinity,
+          repeatType: 'reverse',
+          ease: 'easeInOut'
+        }} />}
+          {/* Second ring */}
+          <circle cx={542} cy={308} r={14} stroke="#C8A84B" strokeWidth={1.5} strokeOpacity={0.6} fill="none" />
+          {/* Inner dot */}
+          <circle cx={542} cy={308} r={7} fill="#C8A84B" filter="url(#node-glow)" />
+          {/* Labels */}
+          <text x={542} y={280} textAnchor="middle" fontSize="11" fill="#C8A84B" fontFamily={BODY_FONT} fontWeight="700" letterSpacing="0.5">NKOMAZI SEZ</text>
+          <text x={542} y={328} textAnchor="middle" fontSize="9" fill="white" fillOpacity="0.7" fontFamily={BODY_FONT}>Komatipoort</text>
+        </g>
+
+        {/* Legend */}
+        <g>
+          <rect x={30} y={460} width={190} height={118} rx="6" fill="rgba(0,0,0,0.4)" />
+          <text x={42} y={478} fontSize="9" fill="white" fillOpacity="0.9" fontFamily={BODY_FONT} style={{
+          textTransform: 'uppercase',
+          letterSpacing: '1px'
+        }}>LEGEND</text>
+          {/* Urban Nodes */}
+          <circle cx={46} cy={492} r={5} fill="#E8521A" />
+          <text x={58} y={496} fontSize="9" fill="white" fillOpacity="0.75" fontFamily={BODY_FONT}>Urban Nodes</text>
+          {/* Tertiary Resource Nodes */}
+          <circle cx={46} cy={508} r={4} fill="#3DBE6C" />
+          <text x={58} y={512} fontSize="9" fill="white" fillOpacity="0.75" fontFamily={BODY_FONT}>Tertiary Resource Nodes</text>
+          {/* Main Towns */}
+          <circle cx={46} cy={524} r={3} fill="white" fillOpacity="0.65" />
+          <text x={58} y={528} fontSize="9" fill="white" fillOpacity="0.75" fontFamily={BODY_FONT}>Main Towns</text>
+          {/* Primary Corridor */}
+          <line x1={38} y1={540} x2={54} y2={540} stroke="#E8521A" strokeWidth="2.5" />
+          <text x={58} y={544} fontSize="9" fill="white" fillOpacity="0.75" fontFamily={BODY_FONT}>Primary Corridor (N4)</text>
+          {/* Sub-Corridors */}
+          <line x1={38} y1={556} x2={54} y2={556} stroke="#3DBE6C" strokeWidth="2" />
+          <text x={58} y={560} fontSize="9" fill="white" fillOpacity="0.75" fontFamily={BODY_FONT}>Sub-Corridors</text>
+          {/* Feeder Links */}
+          <line x1={38} y1={572} x2={54} y2={572} stroke="white" strokeOpacity="0.5" strokeWidth="1" strokeDasharray="4 3" />
+          <text x={58} y={576} fontSize="9" fill="white" fillOpacity="0.75" fontFamily={BODY_FONT}>Feeder Links</text>
+        </g>
+
+        {/* Gold ring legend item - added separately due to position */}
+        <g>
+          <circle cx={46} cy={540} r={0} fill="none" />
+        </g>
+
+        {/* Nkomazi SEZ gold ring in legend - overlaid after rect */}
+        <g>
+          <rect x={30} y={576} width={190} height={20} rx="0" fill="rgba(0,0,0,0.4)" />
+          <circle cx={46} cy={589} r={5} stroke="#C8A84B" strokeWidth="1.5" fill="none" />
+          <circle cx={46} cy={589} r={2} fill="#C8A84B" />
+          <text x={58} y={593} fontSize="9" fill="white" fillOpacity="0.75" fontFamily={BODY_FONT}>Nkomazi SEZ Hub</text>
+        </g>
+
+        {/* SVG Tooltip */}
+        {tooltip && <g>
+            <rect x={tooltip.x > 720 ? tooltip.x - 160 : tooltip.x + 16} y={tooltip.y > 450 ? tooltip.y - 52 : tooltip.y - 8} width={144} height={44} rx="4" fill="#1D4D35" stroke="#C8A84B" strokeWidth="1" />
+            <text x={tooltip.x > 720 ? tooltip.x - 152 : tooltip.x + 24} y={tooltip.y > 450 ? tooltip.y - 34 : tooltip.y + 10} fontSize="11" fill="white" fontFamily={BODY_FONT} fontWeight="600">
+              {tooltip.name}
+            </text>
+            <text x={tooltip.x > 720 ? tooltip.x - 152 : tooltip.x + 24} y={tooltip.y > 450 ? tooltip.y - 18 : tooltip.y + 26} fontSize="9" fill="white" fillOpacity="0.6" fontFamily={BODY_FONT}>
+              {tooltip.description}
+            </text>
+          </g>}
+      </svg>
+    </div>;
+};
+
+// ─── Tab Switcher ─────────────────────────────────────────────────────────────
+
+const TabSwitcher = ({
+  activeTab,
+  onTabChange
+}: {
+  activeTab: 'corridor' | 'global';
+  onTabChange: (tab: 'corridor' | 'global') => void;
+}) => {
+  const tabs = [{
+    id: 'corridor' as const,
+    label: 'Regional Corridor'
+  }, {
+    id: 'global' as const,
+    label: 'Global Trade Routes'
+  }];
+  return <div className="flex items-center gap-0 px-6 pb-6">
+      {tabs.map(tab => {
+      const isActive = activeTab === tab.id;
+      return <button key={tab.id} onClick={() => onTabChange(tab.id)} style={{
+        fontFamily: BODY_FONT,
+        background: 'none',
+        border: 'none',
+        borderBottom: isActive ? '2px solid #E8521A' : '2px solid transparent',
+        color: 'white',
+        fontSize: '14px',
+        fontWeight: isActive ? 600 : 400,
+        padding: '10px 20px',
+        cursor: 'pointer',
+        transition: 'border-color 0.2s, font-weight 0.1s',
+        letterSpacing: '0.01em',
+        opacity: isActive ? 1 : 0.55
+      }}>
+            {tab.label}
+          </button>;
+    })}
+    </div>;
+};
+
 // ─── Main component ───────────────────────────────────────────────────────────
 
 export const GlobalRouteMap: React.FC = () => {
@@ -990,6 +1363,7 @@ export const GlobalRouteMap: React.FC = () => {
   const [hoveredCity, setHoveredCity] = useState<string | null>(null);
   const [activeLabelIdx, setActiveLabelIdx] = useState(0);
   const [activeFilter, setActiveFilter] = useState<string>('all');
+  const [activeTab, setActiveTab] = useState<'corridor' | 'global'>('corridor');
   const allNodes = [NKOMAZI_HUB, ...CITY_NODES];
   const routePaths: RouteWithPath[] = TRADE_ROUTES.map(route => {
     const from = allNodes.find(n => n.id === route.from)!;
@@ -1000,14 +1374,10 @@ export const GlobalRouteMap: React.FC = () => {
     };
   });
   const activeFilterDef = FILTER_REGIONS.find(f => f.id === activeFilter)!;
-
-  // Determine which routes are "active" under the current filter
   const isRouteActive = (route: RouteWithPath): boolean => {
     if (activeFilter === 'all') return true;
     return route.corridor === activeFilter;
   };
-
-  // Determine which nodes are "active" under the current filter
   const isNodeActive = (nodeId: string): boolean => {
     if (activeFilter === 'all') return true;
     if (nodeId === 'nkz') return true;
@@ -1074,306 +1444,347 @@ export const GlobalRouteMap: React.FC = () => {
           letterSpacing: '-2px',
           fontFamily: HEADING_FONT
         }}>
-            Nkomazi's global trade reach
+            From Komatipoort to the world
           </h2>
           <p className="text-white/55 text-base leading-[1.7] m-0 max-w-[560px]" style={{
           fontFamily: BODY_FONT
         }}>
-            Direct corridor access to SADC, EU, MENA, and Asia-Pacific markets — filter by region or hover any city to reveal active trade corridors.
+            From Komatipoort to the world — strategic access along Africa's primary trade artery.
           </p>
         </motion.div>
 
-        {/* ── Region Filter Toggle Bar ── */}
-        <RegionFilterBar activeFilter={activeFilter} onSelect={setActiveFilter} />
+        {/* Tab Switcher */}
+        <motion.div initial={{
+        opacity: 0,
+        y: 8
+      }} animate={inView ? {
+        opacity: 1,
+        y: 0
+      } : {}} transition={{
+        duration: 0.5,
+        delay: 0.2
+      }} style={{
+        borderBottom: '1px solid rgba(255,255,255,0.08)'
+      }} className="px-6 flex">
+          <TabSwitcher activeTab={activeTab} onTabChange={setActiveTab} />
+        </motion.div>
 
-        {/* ── Active filter summary pill ── */}
+        {/* Tab Panels */}
         <AnimatePresence mode="wait">
-          {activeFilter !== 'all' && <motion.div key={activeFilter} initial={{
+          {activeTab === 'corridor' && <motion.div key="corridor-tab" initial={{
           opacity: 0,
-          y: -6
+          y: 12
         }} animate={{
           opacity: 1,
           y: 0
         }} exit={{
           opacity: 0,
-          y: -6
+          y: -8
         }} transition={{
-          duration: 0.25,
-          ease: 'easeOut'
-        }} className="flex justify-center pb-4">
-              <div className="flex items-center gap-2.5 px-4 py-2 rounded-full" style={{
-            background: 'rgba(255,255,255,0.05)',
-            border: `1px solid ${activeFilterDef.color}40`
-          }}>
-                <div className="w-2 h-2 rounded-full animate-pulse" style={{
-              backgroundColor: activeFilterDef.color
-            }} />
-                <span className="text-xs font-medium" style={{
-              fontFamily: BODY_FONT,
-              color: activeFilterDef.color
-            }}>
-                  {activeFilterDef.label} corridors highlighted
-                </span>
-                <button onClick={() => setActiveFilter('all')} className="ml-1 text-white/30 hover:text-white/70 transition-colors duration-200 text-xs" style={{
-              fontFamily: BODY_FONT
-            }}>
-                  ✕ clear
-                </button>
+          duration: 0.35,
+          ease: [0.22, 1, 0.36, 1]
+        }} className="w-full px-4 pb-4 pt-4">
+              <MaputoCorridorMap inView={inView} />
+            </motion.div>}
+
+          {activeTab === 'global' && <motion.div key="global-tab" initial={{
+          opacity: 0,
+          y: 12
+        }} animate={{
+          opacity: 1,
+          y: 0
+        }} exit={{
+          opacity: 0,
+          y: -8
+        }} transition={{
+          duration: 0.35,
+          ease: [0.22, 1, 0.36, 1]
+        }}>
+              {/* ── Region Filter Toggle Bar ── */}
+              <div className="pt-4">
+                <RegionFilterBar activeFilter={activeFilter} onSelect={setActiveFilter} />
               </div>
+
+              {/* ── Active filter summary pill ── */}
+              <AnimatePresence mode="wait">
+                {activeFilter !== 'all' && <motion.div key={activeFilter} initial={{
+              opacity: 0,
+              y: -6
+            }} animate={{
+              opacity: 1,
+              y: 0
+            }} exit={{
+              opacity: 0,
+              y: -6
+            }} transition={{
+              duration: 0.25,
+              ease: 'easeOut'
+            }} className="flex justify-center pb-4">
+                    <div className="flex items-center gap-2.5 px-4 py-2 rounded-full" style={{
+                background: 'rgba(255,255,255,0.05)',
+                border: `1px solid ${activeFilterDef.color}40`
+              }}>
+                      <div className="w-2 h-2 rounded-full animate-pulse" style={{
+                  backgroundColor: activeFilterDef.color
+                }} />
+                      <span className="text-xs font-medium" style={{
+                  fontFamily: BODY_FONT,
+                  color: activeFilterDef.color
+                }}>
+                        {activeFilterDef.label} corridors highlighted
+                      </span>
+                      <button onClick={() => setActiveFilter('all')} className="ml-1 text-white/30 hover:text-white/70 transition-colors duration-200 text-xs" style={{
+                  fontFamily: BODY_FONT
+                }}>
+                        ✕ clear
+                      </button>
+                    </div>
+                  </motion.div>}
+              </AnimatePresence>
+
+              {/* SVG Map */}
+              <motion.div initial={{
+            opacity: 0
+          }} animate={{
+            opacity: 1
+          }} transition={{
+            duration: 1.0,
+            delay: 0.3
+          }} className="w-full px-4 pb-2 relative">
+                <svg viewBox="0 0 1000 460" preserveAspectRatio="xMidYMid meet" className="w-full" style={{
+              display: 'block'
+            }} aria-label="Nkomazi SEZ global trade corridor map">
+                  <defs>
+                    <filter id="dot-glow" x="-150%" y="-150%" width="400%" height="400%">
+                      <feGaussianBlur stdDeviation="2.5" result="blur" />
+                      <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+                    </filter>
+                    <filter id="hub-glow" x="-200%" y="-200%" width="500%" height="500%">
+                      <feGaussianBlur stdDeviation="6" result="blur" />
+                      <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+                    </filter>
+                    <radialGradient id="hub-pulse" cx="50%" cy="50%" r="50%">
+                      <stop offset="0%" stopColor="#C8A84B" stopOpacity="0.55" />
+                      <stop offset="100%" stopColor="#C8A84B" stopOpacity="0" />
+                    </radialGradient>
+                    <radialGradient id="hub-spotlight" cx="50%" cy="64%" r="45%">
+                      <stop offset="0%" stopColor="rgba(200,168,75,0.07)" stopOpacity="1" />
+                      <stop offset="100%" stopColor="transparent" stopOpacity="0" />
+                    </radialGradient>
+                    <radialGradient id="map-vignette" cx="50%" cy="50%" r="55%">
+                      <stop offset="35%" stopColor="transparent" stopOpacity="0" />
+                      <stop offset="100%" stopColor="#0F2419" stopOpacity="0.75" />
+                    </radialGradient>
+                  </defs>
+
+                  {/* Grid */}
+                  {[100, 200, 300, 400, 500, 600, 700, 800, 900].map(x => <line key={`vg-${x}`} x1={x} y1={0} x2={x} y2={460} stroke="rgba(255,255,255,0.018)" strokeWidth="0.5" />)}
+                  {[80, 160, 240, 320, 400].map(y => <line key={`hg-${y}`} x1={0} y1={y} x2={1000} y2={y} stroke="rgba(255,255,255,0.018)" strokeWidth="0.5" />)}
+
+                  {/* Continent fills */}
+                  {CONTINENT_PATHS.map((cp, i) => <path key={`cont-${i}`} d={cp.d} fill={cp.fill} stroke={cp.stroke} strokeWidth="0.8" />)}
+
+                  {/* Spotlight + vignette */}
+                  <rect x="0" y="0" width="1000" height="460" fill="url(#hub-spotlight)" />
+                  <rect x="0" y="0" width="1000" height="460" fill="url(#map-vignette)" />
+
+                  {/* Pulsing radius circles */}
+                  {inView && <>
+                      <RadiusPulse cx={NKOMAZI_HUB.cx} cy={NKOMAZI_HUB.cy} baseR={40} delay={0.0} />
+                      <RadiusPulse cx={NKOMAZI_HUB.cx} cy={NKOMAZI_HUB.cy} baseR={72} delay={0.9} />
+                      <RadiusPulse cx={NKOMAZI_HUB.cx} cy={NKOMAZI_HUB.cy} baseR={108} delay={1.8} />
+                    </>}
+
+                  {/* Route arcs */}
+                  {routePaths.map(route => <motion.path key={`arc-${route.from}-${route.to}`} d={route.pathStr} fill="none" animate={{
+                stroke: getRouteStroke(route),
+                strokeWidth: getRouteWidth(route),
+                opacity: getRouteOpacity(route)
+              }} transition={{
+                duration: 0.4,
+                ease: 'easeInOut'
+              }} strokeDasharray={isRouteActive(route) ? route.from === 'nkz' || route.to === 'nkz' ? 'none' : '3 5' : '2 6'} />)}
+
+                  {/* Animated trade dots */}
+                  {inView && routePaths.map(route => isRouteActive(route) && <TradeDot key={`dot-${route.from}-${route.to}`} pathStr={route.pathStr} delay={route.delay} duration={route.duration} isHub={route.from === 'nkz' || route.to === 'nkz'} />)}
+
+                  {/* Animated route labels */}
+                  {inView && labelledHubRoutes.map((route, i) => <RouteLabel key={`lbl-${route.from}-${route.to}`} pathStr={route.pathStr} label={route.label!} visible={i === activeLabelIdx} />)}
+
+                  {/* Hub glow halo */}
+                  <motion.circle cx={NKOMAZI_HUB.cx} cy={NKOMAZI_HUB.cy} r={36} fill="url(#hub-pulse)" animate={{
+                r: [30, 52],
+                opacity: [0.65, 0]
+              }} transition={{
+                duration: 2.8,
+                repeat: Infinity,
+                ease: 'easeOut'
+              }} />
+
+                  {/* City nodes */}
+                  {CITY_NODES.map(city => {
+                const color = REGION_COLORS[city.region] || '#C8A84B';
+                const isHovered = hoveredCity === city.id;
+                const isRegionalNode = REGIONAL_IDS.includes(city.id);
+                const nodeActive = isNodeActive(city.id);
+                return <g key={city.id} style={{
+                  cursor: 'pointer'
+                }} onMouseEnter={() => setHoveredCity(city.id)} onMouseLeave={() => setHoveredCity(null)}>
+                        {isHovered && <PulseRing cx={city.cx} cy={city.cy} delay={0} />}
+                        <motion.circle cx={city.cx} cy={city.cy} r={isHovered ? 6 : isRegionalNode ? 4.5 : 3.5} fill={color} animate={{
+                    opacity: nodeActive ? 1 : 0.15
+                  }} transition={{
+                    duration: 0.35
+                  }} />
+                        <motion.text x={city.cx} y={city.cy - 8} textAnchor="middle" fontSize={isRegionalNode ? '9.5' : '8.5'} fill={isHovered ? 'rgba(255,255,255,0.95)' : isRegionalNode ? 'rgba(255,255,255,0.7)' : 'rgba(255,255,255,0.45)'} style={{
+                    fontFamily: BODY_FONT,
+                    fontWeight: isHovered || isRegionalNode ? 600 : 400
+                  }} animate={{
+                    opacity: nodeActive ? 1 : 0.12
+                  }} transition={{
+                    duration: 0.35
+                  }}>
+                          {city.label}
+                        </motion.text>
+                      </g>;
+              })}
+
+                  {/* Hub node */}
+                  <g style={{
+                cursor: 'pointer'
+              }} onMouseEnter={() => setHoveredCity('nkz')} onMouseLeave={() => setHoveredCity(null)}>
+                    <PulseRing cx={NKOMAZI_HUB.cx} cy={NKOMAZI_HUB.cy} delay={0} />
+                    <PulseRing cx={NKOMAZI_HUB.cx} cy={NKOMAZI_HUB.cy} delay={1.2} />
+                    <motion.circle cx={NKOMAZI_HUB.cx} cy={NKOMAZI_HUB.cy} r={10} fill="#C8A84B" filter="url(#hub-glow)" animate={inView ? {
+                  scale: [1, 1.15, 1]
+                } : {}} transition={{
+                  duration: 2.4,
+                  repeat: Infinity,
+                  ease: 'easeInOut'
+                }} />
+                    <circle cx={NKOMAZI_HUB.cx} cy={NKOMAZI_HUB.cy} r={4.5} fill="#0F2419" />
+                    <text x={NKOMAZI_HUB.cx} y={NKOMAZI_HUB.cy + 22} textAnchor="middle" fontSize="10" fill="#C8A84B" style={{
+                  fontFamily: BODY_FONT,
+                  fontWeight: 700,
+                  letterSpacing: '0.04em'
+                }}>
+                      NKOMAZI SEZ
+                    </text>
+                    <text x={NKOMAZI_HUB.cx} y={NKOMAZI_HUB.cy + 34} textAnchor="middle" fontSize="8" fill="rgba(200,168,75,0.55)" style={{
+                  fontFamily: BODY_FONT
+                }}>
+                      Mpumalanga · South Africa
+                    </text>
+                  </g>
+
+                  {/* Hover tooltip */}
+                  <AnimatePresence>
+                    {hoveredCity && hoveredCity !== 'nkz' && (() => {
+                  const city = CITY_NODES.find(c => c.id === hoveredCity);
+                  if (!city) return null;
+                  const color = REGION_COLORS[city.region] || '#C8A84B';
+                  const routes = routePaths.filter(r => r.from === hoveredCity || r.to === hoveredCity);
+                  const tx = city.cx > 750 ? city.cx - 126 : city.cx + 12;
+                  const ty = city.cy > 360 ? city.cy - 64 : city.cy + 12;
+                  return <g key={`tooltip-${hoveredCity}`}>
+                          <motion.rect x={tx} y={ty} width={116} height={50} rx={6} ry={6} fill="rgba(15,36,25,0.95)" stroke="rgba(200,168,75,0.4)" strokeWidth={0.7} initial={{
+                      opacity: 0,
+                      scale: 0.9
+                    }} animate={{
+                      opacity: 1,
+                      scale: 1
+                    }} exit={{
+                      opacity: 0,
+                      scale: 0.9
+                    }} transition={{
+                      duration: 0.18
+                    }} style={{
+                      transformOrigin: `${tx}px ${ty}px`
+                    }} />
+                          <text x={tx + 10} y={ty + 18} fontSize="9.5" fill="white" style={{
+                      fontFamily: BODY_FONT,
+                      fontWeight: 600
+                    }}>{city.label}</text>
+                          <text x={tx + 10} y={ty + 30} fontSize="8.5" fill={color} style={{
+                      fontFamily: BODY_FONT
+                    }}>{city.region}</text>
+                          <text x={tx + 10} y={ty + 42} fontSize="7.5" fill="rgba(255,255,255,0.45)" style={{
+                      fontFamily: BODY_FONT
+                    }}>{routes.length} active corridor{routes.length !== 1 ? 's' : ''}</text>
+                        </g>;
+                })()}
+                  </AnimatePresence>
+                </svg>
+
+                {/* Inset panel */}
+                <InsetPanel inView={inView} />
+
+                {/* Inset connector line */}
+                <motion.div initial={{
+              opacity: 0
+            }} animate={inView ? {
+              opacity: 1
+            } : {}} transition={{
+              duration: 0.6,
+              delay: 1.2
+            }} className="absolute bottom-[56px] left-[214px] hidden lg:block" style={{
+              pointerEvents: 'none'
+            }}>
+                  <svg width="40" height="30" viewBox="0 0 40 30">
+                    <path d="M 0 28 Q 20 28 40 14" fill="none" stroke="rgba(200,168,75,0.25)" strokeWidth="0.8" strokeDasharray="3 4" />
+                  </svg>
+                </motion.div>
+              </motion.div>
+
+              {/* Stats bar */}
+              <motion.div initial={{
+            opacity: 0,
+            y: 20
+          }} animate={{
+            opacity: 1,
+            y: 0
+          }} transition={{
+            duration: 0.6,
+            delay: 0.6
+          }} className="grid gap-px mx-4 mb-4 rounded-2xl overflow-hidden" style={{
+            gridTemplateColumns: 'repeat(4, 1fr)',
+            background: 'rgba(200,168,75,0.12)'
+          }}>
+                {MAP_STATS.map(stat => <div key={stat.label} className="flex flex-col items-center justify-center gap-1.5 py-7 px-4" style={{
+              background: 'rgba(200,168,75,0.06)'
+            }}>
+                    <span className="text-white font-light" style={{
+                fontSize: '36px',
+                letterSpacing: '-1.5px',
+                lineHeight: '1',
+                fontFamily: HEADING_FONT
+              }}>{stat.value}</span>
+                    <span className="text-white/50 text-sm text-center leading-tight" style={{
+                fontFamily: BODY_FONT
+              }}>{stat.label}</span>
+                  </div>)}
+              </motion.div>
+
+              {/* Legend */}
+              <motion.div initial={{
+            opacity: 0
+          }} animate={{
+            opacity: 1
+          }} transition={{
+            duration: 0.6,
+            delay: 0.8
+          }} className="flex flex-wrap justify-center gap-x-6 gap-y-2 pb-10 px-6">
+                {Object.entries(REGION_COLORS).map(([region, color]) => <div key={region} className="flex items-center gap-1.5">
+                    <div className="w-2 h-2 rounded-full flex-shrink-0" style={{
+                backgroundColor: color
+              }} />
+                    <span className="text-white/40 text-xs" style={{
+                fontFamily: BODY_FONT
+              }}>{region}</span>
+                  </div>)}
+              </motion.div>
             </motion.div>}
         </AnimatePresence>
-
-        {/* SVG Map */}
-        <motion.div initial={{
-        opacity: 0
-      }} animate={inView ? {
-        opacity: 1
-      } : {}} transition={{
-        duration: 1.0,
-        delay: 0.3
-      }} className="w-full px-4 pb-2 relative">
-          <svg viewBox="0 0 1000 460" preserveAspectRatio="xMidYMid meet" className="w-full" style={{
-          display: 'block'
-        }} aria-label="Nkomazi SEZ global trade corridor map">
-            <defs>
-              <filter id="dot-glow" x="-150%" y="-150%" width="400%" height="400%">
-                <feGaussianBlur stdDeviation="2.5" result="blur" />
-                <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-              </filter>
-              <filter id="hub-glow" x="-200%" y="-200%" width="500%" height="500%">
-                <feGaussianBlur stdDeviation="6" result="blur" />
-                <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-              </filter>
-              <radialGradient id="hub-pulse" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stopColor="#C8A84B" stopOpacity="0.55" />
-                <stop offset="100%" stopColor="#C8A84B" stopOpacity="0" />
-              </radialGradient>
-              <radialGradient id="hub-spotlight" cx="50%" cy="64%" r="45%">
-                <stop offset="0%" stopColor="rgba(200,168,75,0.07)" stopOpacity="1" />
-                <stop offset="100%" stopColor="transparent" stopOpacity="0" />
-              </radialGradient>
-              <radialGradient id="map-vignette" cx="50%" cy="50%" r="55%">
-                <stop offset="35%" stopColor="transparent" stopOpacity="0" />
-                <stop offset="100%" stopColor="#0F2419" stopOpacity="0.75" />
-              </radialGradient>
-            </defs>
-
-            {/* Grid */}
-            {[100, 200, 300, 400, 500, 600, 700, 800, 900].map(x => <line key={`vg-${x}`} x1={x} y1={0} x2={x} y2={460} stroke="rgba(255,255,255,0.018)" strokeWidth="0.5" />)}
-            {[80, 160, 240, 320, 400].map(y => <line key={`hg-${y}`} x1={0} y1={y} x2={1000} y2={y} stroke="rgba(255,255,255,0.018)" strokeWidth="0.5" />)}
-
-            {/* Continent fills */}
-            {CONTINENT_PATHS.map((cp, i) => <path key={`cont-${i}`} d={cp.d} fill={cp.fill} stroke={cp.stroke} strokeWidth="0.8" />)}
-
-            {/* Spotlight + vignette */}
-            <rect x="0" y="0" width="1000" height="460" fill="url(#hub-spotlight)" />
-            <rect x="0" y="0" width="1000" height="460" fill="url(#map-vignette)" />
-
-            {/* Pulsing radius circles */}
-            {inView && <>
-                <RadiusPulse cx={NKOMAZI_HUB.cx} cy={NKOMAZI_HUB.cy} baseR={40} delay={0.0} />
-                <RadiusPulse cx={NKOMAZI_HUB.cx} cy={NKOMAZI_HUB.cy} baseR={72} delay={0.9} />
-                <RadiusPulse cx={NKOMAZI_HUB.cx} cy={NKOMAZI_HUB.cy} baseR={108} delay={1.8} />
-              </>}
-
-            {/* Route arcs */}
-            {routePaths.map(route => <motion.path key={`arc-${route.from}-${route.to}`} d={route.pathStr} fill="none" animate={{
-            stroke: getRouteStroke(route),
-            strokeWidth: getRouteWidth(route),
-            opacity: getRouteOpacity(route)
-          }} transition={{
-            duration: 0.4,
-            ease: 'easeInOut'
-          }} strokeDasharray={isRouteActive(route) ? route.from === 'nkz' || route.to === 'nkz' ? 'none' : '3 5' : '2 6'} />)}
-
-            {/* Animated trade dots — only on active routes */}
-            {inView && routePaths.map(route => isRouteActive(route) && <TradeDot key={`dot-${route.from}-${route.to}`} pathStr={route.pathStr} delay={route.delay} duration={route.duration} isHub={route.from === 'nkz' || route.to === 'nkz'} />)}
-
-            {/* Animated route labels */}
-            {inView && labelledHubRoutes.map((route, i) => <RouteLabel key={`lbl-${route.from}-${route.to}`} pathStr={route.pathStr} label={route.label!} visible={i === activeLabelIdx} />)}
-
-            {/* Hub glow halo */}
-            <motion.circle cx={NKOMAZI_HUB.cx} cy={NKOMAZI_HUB.cy} r={36} fill="url(#hub-pulse)" animate={{
-            r: [30, 52],
-            opacity: [0.65, 0]
-          }} transition={{
-            duration: 2.8,
-            repeat: Infinity,
-            ease: 'easeOut'
-          }} />
-
-            {/* City nodes */}
-            {CITY_NODES.map(city => {
-            const color = REGION_COLORS[city.region] || '#C8A84B';
-            const isHovered = hoveredCity === city.id;
-            const isRegionalNode = REGIONAL_IDS.includes(city.id);
-            const nodeActive = isNodeActive(city.id);
-            return <g key={city.id} style={{
-              cursor: 'pointer'
-            }} onMouseEnter={() => setHoveredCity(city.id)} onMouseLeave={() => setHoveredCity(null)}>
-                  {isHovered && <PulseRing cx={city.cx} cy={city.cy} delay={0} />}
-                  <motion.circle cx={city.cx} cy={city.cy} r={isHovered ? 6 : isRegionalNode ? 4.5 : 3.5} fill={color} animate={{
-                opacity: nodeActive ? 1 : 0.15
-              }} transition={{
-                duration: 0.35
-              }} />
-                  <motion.text x={city.cx} y={city.cy - 8} textAnchor="middle" fontSize={isRegionalNode ? '9.5' : '8.5'} fill={isHovered ? 'rgba(255,255,255,0.95)' : isRegionalNode ? 'rgba(255,255,255,0.7)' : 'rgba(255,255,255,0.45)'} style={{
-                fontFamily: BODY_FONT,
-                fontWeight: isHovered || isRegionalNode ? 600 : 400
-              }} animate={{
-                opacity: nodeActive ? 1 : 0.12
-              }} transition={{
-                duration: 0.35
-              }}>
-                    {city.label}
-                  </motion.text>
-                </g>;
-          })}
-
-            {/* Hub node */}
-            <g style={{
-            cursor: 'pointer'
-          }} onMouseEnter={() => setHoveredCity('nkz')} onMouseLeave={() => setHoveredCity(null)}>
-              <PulseRing cx={NKOMAZI_HUB.cx} cy={NKOMAZI_HUB.cy} delay={0} />
-              <PulseRing cx={NKOMAZI_HUB.cx} cy={NKOMAZI_HUB.cy} delay={1.2} />
-              <motion.circle cx={NKOMAZI_HUB.cx} cy={NKOMAZI_HUB.cy} r={10} fill="#C8A84B" filter="url(#hub-glow)" animate={inView ? {
-              scale: [1, 1.15, 1]
-            } : {}} transition={{
-              duration: 2.4,
-              repeat: Infinity,
-              ease: 'easeInOut'
-            }} />
-              <circle cx={NKOMAZI_HUB.cx} cy={NKOMAZI_HUB.cy} r={4.5} fill="#0F2419" />
-              <text x={NKOMAZI_HUB.cx} y={NKOMAZI_HUB.cy + 22} textAnchor="middle" fontSize="10" fill="#C8A84B" style={{
-              fontFamily: BODY_FONT,
-              fontWeight: 700,
-              letterSpacing: '0.04em'
-            }}>
-                NKOMAZI SEZ
-              </text>
-              <text x={NKOMAZI_HUB.cx} y={NKOMAZI_HUB.cy + 34} textAnchor="middle" fontSize="8" fill="rgba(200,168,75,0.55)" style={{
-              fontFamily: BODY_FONT
-            }}>
-                Mpumalanga · South Africa
-              </text>
-            </g>
-
-            {/* Hover tooltip */}
-            <AnimatePresence>
-              {hoveredCity && hoveredCity !== 'nkz' && (() => {
-              const city = CITY_NODES.find(c => c.id === hoveredCity);
-              if (!city) return null;
-              const color = REGION_COLORS[city.region] || '#C8A84B';
-              const routes = routePaths.filter(r => r.from === hoveredCity || r.to === hoveredCity);
-              const tx = city.cx > 750 ? city.cx - 126 : city.cx + 12;
-              const ty = city.cy > 360 ? city.cy - 64 : city.cy + 12;
-              return <g key={`tooltip-${hoveredCity}`}>
-                    <motion.rect x={tx} y={ty} width={116} height={50} rx={6} ry={6} fill="rgba(15,36,25,0.95)" stroke="rgba(200,168,75,0.4)" strokeWidth={0.7} initial={{
-                  opacity: 0,
-                  scale: 0.9
-                }} animate={{
-                  opacity: 1,
-                  scale: 1
-                }} exit={{
-                  opacity: 0,
-                  scale: 0.9
-                }} transition={{
-                  duration: 0.18
-                }} style={{
-                  transformOrigin: `${tx}px ${ty}px`
-                }} />
-                    <text x={tx + 10} y={ty + 18} fontSize="9.5" fill="white" style={{
-                  fontFamily: BODY_FONT,
-                  fontWeight: 600
-                }}>
-                      {city.label}
-                    </text>
-                    <text x={tx + 10} y={ty + 30} fontSize="8.5" fill={color} style={{
-                  fontFamily: BODY_FONT
-                }}>
-                      {city.region}
-                    </text>
-                    <text x={tx + 10} y={ty + 42} fontSize="7.5" fill="rgba(255,255,255,0.45)" style={{
-                  fontFamily: BODY_FONT
-                }}>
-                      {routes.length} active corridor{routes.length !== 1 ? 's' : ''}
-                    </text>
-                  </g>;
-            })()}
-            </AnimatePresence>
-          </svg>
-
-          {/* Inset panel */}
-          <InsetPanel inView={inView} />
-
-          {/* Inset connector line */}
-          <motion.div initial={{
-          opacity: 0
-        }} animate={inView ? {
-          opacity: 1
-        } : {}} transition={{
-          duration: 0.6,
-          delay: 1.2
-        }} className="absolute bottom-[56px] left-[214px] hidden lg:block" style={{
-          pointerEvents: 'none'
-        }}>
-            <svg width="40" height="30" viewBox="0 0 40 30">
-              <path d="M 0 28 Q 20 28 40 14" fill="none" stroke="rgba(200,168,75,0.25)" strokeWidth="0.8" strokeDasharray="3 4" />
-            </svg>
-          </motion.div>
-        </motion.div>
-
-        {/* Stats bar */}
-        <motion.div initial={{
-        opacity: 0,
-        y: 20
-      }} animate={inView ? {
-        opacity: 1,
-        y: 0
-      } : {}} transition={{
-        duration: 0.6,
-        delay: 0.6
-      }} className="grid gap-px mx-4 mb-4 rounded-2xl overflow-hidden" style={{
-        gridTemplateColumns: 'repeat(4, 1fr)',
-        background: 'rgba(200,168,75,0.12)'
-      }}>
-          {MAP_STATS.map(stat => <div key={stat.label} className="flex flex-col items-center justify-center gap-1.5 py-7 px-4" style={{
-          background: 'rgba(200,168,75,0.06)'
-        }}>
-              <span className="text-white font-light" style={{
-            fontSize: '36px',
-            letterSpacing: '-1.5px',
-            lineHeight: '1',
-            fontFamily: HEADING_FONT
-          }}>
-                {stat.value}
-              </span>
-              <span className="text-white/50 text-sm text-center leading-tight" style={{
-            fontFamily: BODY_FONT
-          }}>
-                {stat.label}
-              </span>
-            </div>)}
-        </motion.div>
-
-        {/* Legend */}
-        <motion.div initial={{
-        opacity: 0
-      }} animate={inView ? {
-        opacity: 1
-      } : {}} transition={{
-        duration: 0.6,
-        delay: 0.8
-      }} className="flex flex-wrap justify-center gap-x-6 gap-y-2 pb-10 px-6">
-          {Object.entries(REGION_COLORS).map(([region, color]) => <div key={region} className="flex items-center gap-1.5">
-              <div className="w-2 h-2 rounded-full flex-shrink-0" style={{
-            backgroundColor: color
-          }} />
-              <span className="text-white/40 text-xs" style={{
-            fontFamily: BODY_FONT
-          }}>{region}</span>
-            </div>)}
-        </motion.div>
 
       </div>
     </section>;

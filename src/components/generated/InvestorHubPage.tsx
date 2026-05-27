@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useInView, useScroll, useTransform, useSpring } from 'framer-motion';
 import { Menu, X, ChevronUp } from 'lucide-react';
+import { NSEZNavbar } from './NSEZNavbar';
 const HEADING_FONT = "'Inter', system-ui, sans-serif";
 const BODY_FONT = "'DM Sans', system-ui, sans-serif";
 
@@ -425,120 +426,6 @@ const DropdownMenu = ({
           </motion.div>}
       </AnimatePresence>
     </div>;
-};
-
-// ─── Sticky Navbar ─────────────────────────────────────────────────────────────
-
-const StickyNav = ({
-  mobileMenuOpen,
-  setMobileMenuOpen
-}: {
-  mobileMenuOpen: boolean;
-  setMobileMenuOpen: (v: boolean) => void;
-}) => {
-  const [scrolled, setScrolled] = useState(false);
-  useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 60);
-    window.addEventListener('scroll', handleScroll, {
-      passive: true
-    });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-  return <motion.nav className="fixed top-0 left-0 right-0 z-[9999] px-4 lg:px-6" initial={false} animate={scrolled ? {
-    paddingTop: '0px'
-  } : {
-    paddingTop: '20px'
-  }} transition={{
-    duration: 0.35,
-    ease: 'easeInOut'
-  }}>
-      <motion.div className="absolute inset-0" initial={false} animate={scrolled ? {
-      opacity: 1
-    } : {
-      opacity: 0
-    }} transition={{
-      duration: 0.35
-    }} style={{
-      background: 'rgba(15,36,25,0.96)',
-      backdropFilter: 'blur(20px)',
-      WebkitBackdropFilter: 'blur(20px)'
-    }} />
-      <motion.div className="absolute bottom-0 left-0 right-0 h-[1px]" initial={false} animate={scrolled ? {
-      opacity: 1
-    } : {
-      opacity: 0
-    }} transition={{
-      duration: 0.35
-    }} style={{
-      background: 'linear-gradient(90deg, transparent, rgba(200,168,75,0.4), transparent)'
-    }} />
-      <div className="relative flex justify-center">
-        <motion.div className="flex items-center justify-between w-full max-w-[1372px]" animate={scrolled ? {
-        paddingTop: '14px',
-        paddingBottom: '14px'
-      } : {
-        paddingTop: '0px',
-        paddingBottom: '0px'
-      }} transition={{
-        duration: 0.35,
-        ease: 'easeInOut'
-      }}>
-          <a href="/" className="flex-shrink-0 flex items-center no-underline min-w-0">
-            <img src="/nsez-logo-white.png" alt="Nkomazi SEZ" className="h-12 w-auto object-contain max-w-none" />
-          </a>
-          <div className="hidden lg:flex items-center gap-0 backdrop-blur-[26px] bg-white/10 border border-white/20 rounded-xl p-[4.6px]">
-            <a href="/investor-hub" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 bg-white/10 border border-white/20 hover:bg-white/10 transition-all duration-300 no-underline tracking-[0.01em]" style={{
-            fontFamily: BODY_FONT
-          }}>Investor Hub</a>
-            <a href="/enterprise-hub" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 transition-all duration-300 no-underline tracking-[0.01em]" style={{
-            fontFamily: BODY_FONT
-          }}>Enterprise Hub</a>
-            <a href="/careers" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 transition-all duration-300 no-underline tracking-[0.01em]" style={{
-            fontFamily: BODY_FONT
-          }}>Careers & Community</a>
-            <a href="/compliance-portal" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 transition-all duration-300 no-underline tracking-[0.01em]" style={{
-            fontFamily: BODY_FONT
-          }}>Compliance Portal</a>
-          </div>
-          <div className="flex items-center gap-2 flex-shrink-0">
-            <div className="hidden lg:block"><GreenButton label="Invest Now" /></div>
-            <button className="lg:hidden flex items-center justify-center w-11 h-11 rounded-full bg-[#1A3C2E] text-white flex-shrink-0" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} aria-label="Toggle menu">
-              {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
-            </button>
-          </div>
-        </motion.div>
-      </div>
-      <AnimatePresence>
-        {mobileMenuOpen && <motion.div initial={{
-        opacity: 0,
-        height: 0
-      }} animate={{
-        opacity: 1,
-        height: 'auto'
-      }} exit={{
-        opacity: 0,
-        height: 0
-      }} transition={{
-        duration: 0.25
-      }} className="relative lg:hidden mt-2 rounded-2xl bg-[#0F2419]/95 backdrop-blur-md overflow-hidden">
-            <div className="p-4 flex flex-col gap-2">
-              <a href="/investor-hub" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 bg-white/10 border border-white/20 hover:bg-white/10 no-underline" style={{
-            fontFamily: BODY_FONT
-          }}>Investor Hub</a>
-              <a href="/enterprise-hub" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 no-underline" style={{
-            fontFamily: BODY_FONT
-          }}>Enterprise Hub</a>
-              <a href="/careers" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 no-underline" style={{
-            fontFamily: BODY_FONT
-          }}>Careers & Community</a>
-              <a href="/compliance-portal" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 no-underline" style={{
-            fontFamily: BODY_FONT
-          }}>Compliance Portal</a>
-              <div className="pt-2"><GreenButton label="Invest Now" /></div>
-            </div>
-          </motion.div>}
-      </AnimatePresence>
-    </motion.nav>;
 };
 
 // ─── Scroll Progress Bar ───────────────────────────────────────────────────────
@@ -1342,7 +1229,7 @@ export const InvestorHubPage = () => {
   }}>
       <ScrollProgressBar />
       <BackToTop />
-      <StickyNav mobileMenuOpen={mobileMenuOpen} setMobileMenuOpen={setMobileMenuOpen} />
+      <NSEZNavbar />
       <HeroSection />
       <FiscalIncentivesSection />
       <IndustrialClustersSection />

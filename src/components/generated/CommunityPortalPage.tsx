@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useInView, useScroll, useTransform } from 'framer-motion';
 import { Menu, X, ChevronUp, ArrowRight, ArrowUpRight, Users, FileText, Download, Award, Instagram, Linkedin, Twitter, MapPin } from 'lucide-react';
+import { NSEZNavbar } from './NSEZNavbar';
 
 // --- Design Tokens ---
 const HEADING_FONT = "'Inter', system-ui, sans-serif";
@@ -345,72 +346,7 @@ export const CommunityPortalPage = () => {
   return <div className="bg-[#EFF0EB] min-h-screen selection:bg-[#C8A84B] selection:text-[#0F2419]">
 
       {/* Navbar */}
-      <motion.nav initial={false} animate={{
-      paddingTop: scrolled ? '0px' : '20px',
-      backgroundColor: scrolled ? 'rgba(15,36,25,0.96)' : 'rgba(0,0,0,0)'
-    }} className="fixed top-0 left-0 right-0 z-[9999] px-4 sm:px-6 transition-colors duration-300">
-        {scrolled && <div className="absolute inset-0 backdrop-blur-xl pointer-events-none" />}
-        <div className={`absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#C8A84B]/40 to-transparent transition-opacity duration-300 ${scrolled ? 'opacity-100' : 'opacity-0'}`} />
-
-        <div className="max-w-[1372px] mx-auto flex justify-between items-center py-4 relative">
-          <a href="/" className="flex-shrink-0">
-            <img src="/nsez-logo-white.png" alt="NSEZ Logo" className="h-12 w-auto object-contain max-w-none" />
-          </a>
-
-          <div className="hidden lg:flex items-center gap-0 backdrop-blur-[26px] bg-white/10 border border-white/20 rounded-xl p-[4.6px]">
-            <a href="/investor-hub" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 transition-all duration-300 no-underline tracking-[0.01em]" style={{
-            fontFamily: BODY_FONT
-          }}>Investor Hub</a>
-            <a href="/enterprise-hub" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 transition-all duration-300 no-underline tracking-[0.01em]" style={{
-            fontFamily: BODY_FONT
-          }}>Enterprise Hub</a>
-            <a href="/careers" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 bg-white/10 border border-white/20 hover:bg-white/10 transition-all duration-300 no-underline tracking-[0.01em]" style={{
-            fontFamily: BODY_FONT
-          }}>Careers & Community</a>
-            <a href="/compliance-portal" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 transition-all duration-300 no-underline tracking-[0.01em]" style={{
-            fontFamily: BODY_FONT
-          }}>Compliance Portal</a>
-          </div>
-
-          <div className="flex items-center gap-3 sm:gap-4">
-            <div className="hidden lg:block">
-              <SplitButton label="Invest Now" variant="green" />
-            </div>
-            <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="lg:hidden w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-[#1A3C2E] text-white flex items-center justify-center hover:bg-[#254d3d] transition-colors flex-shrink-0">
-              {mobileMenuOpen ? <X size={18} /> : <Menu size={18} />}
-            </button>
-          </div>
-        </div>
-
-        <AnimatePresence>
-          {mobileMenuOpen && <motion.div initial={{
-          height: 0,
-          opacity: 0
-        }} animate={{
-          height: 'auto',
-          opacity: 1
-        }} exit={{
-          height: 0,
-          opacity: 0
-        }} className="lg:hidden overflow-hidden bg-[#0F2419] border-t border-white/10 mt-4 rounded-2xl">
-              <div className="flex flex-col p-6 gap-2">
-                <a href="/investor-hub" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 no-underline" style={{
-              fontFamily: BODY_FONT
-            }}>Investor Hub</a>
-                <a href="/enterprise-hub" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 no-underline" style={{
-              fontFamily: BODY_FONT
-            }}>Enterprise Hub</a>
-                <a href="/careers" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 bg-white/10 border border-white/20 hover:bg-white/10 no-underline" style={{
-              fontFamily: BODY_FONT
-            }}>Careers & Community</a>
-                <a href="/compliance-portal" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 no-underline" style={{
-              fontFamily: BODY_FONT
-            }}>Compliance Portal</a>
-                <div className="pt-4"><SplitButton label="Invest Now" variant="green" /></div>
-              </div>
-            </motion.div>}
-        </AnimatePresence>
-      </motion.nav>
+      <NSEZNavbar />
 
       {/* Section I: Hero */}
       <section ref={heroRef} className="relative flex flex-col justify-end rounded-2xl sm:rounded-3xl overflow-hidden mx-1.5 sm:mx-2.5 mt-1.5 sm:mt-2.5 min-h-[600px] sm:min-h-[860px]">
@@ -866,7 +802,7 @@ export const CommunityPortalPage = () => {
           <div className="max-w-[1372px] mx-auto px-4 sm:px-6">
             <div className="flex flex-col gap-8 lg:flex-row lg:justify-between lg:items-end">
               <div className="space-y-8 sm:space-y-12">
-                <img src="/nsez-logo-white.png" alt="NSEZ Logo" className="h-12 w-auto object-contain max-w-none" />
+                <img src="/NSEZ-logo.jpg" alt="NSEZ Logo" className="h-12 w-auto object-contain max-w-none rounded-md" />
                 <div className="space-y-2">
                   <p className="text-white/40 text-sm" style={{
                   fontFamily: BODY_FONT

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useInView, useScroll, useTransform } from 'framer-motion';
 import { Menu, X, ChevronRight, ChevronUp, ArrowRight, ArrowUpRight, Building, GraduationCap, Users, FileText, Download, Calendar, CheckCircle2, Mail, MapPin, Star, Twitter, Instagram, Linkedin } from 'lucide-react';
+import { NSEZNavbar } from './NSEZNavbar';
 
 // --- Design Tokens ---
 const HEADING_FONT = "'Inter', system-ui, sans-serif";
@@ -458,67 +459,7 @@ export const EnterpriseHubPage = () => {
       </AnimatePresence>
 
       {/* Navbar */}
-      <nav className={`fixed top-0 left-0 right-0 z-[9999] px-4 sm:px-6 py-4 transition-all duration-300 ${isScrolled ? 'bg-[#0F2419]/96 backdrop-blur-xl border-b border-white/10' : 'bg-transparent'}`}>
-        <div className="max-w-[1372px] mx-auto flex items-center justify-between gap-4">
-          <a href="/" className="flex-shrink-0">
-            <img src="/nsez-logo-white.png" alt="Nkomazi SEZ Logo" className="h-12 w-auto object-contain max-w-none" />
-          </a>
-
-          <div className="hidden lg:flex items-center gap-0 backdrop-blur-[26px] bg-white/10 border border-white/20 rounded-xl p-[4.6px]">
-            <a href="/investor-hub" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 transition-all duration-300 no-underline tracking-[0.01em]" style={{
-            fontFamily: BODY_FONT
-          }}>Investor Hub</a>
-            <a href="/enterprise-hub" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 bg-white/10 border border-white/20 hover:bg-white/10 transition-all duration-300 no-underline tracking-[0.01em]" style={{
-            fontFamily: BODY_FONT
-          }}>Enterprise Hub</a>
-            <a href="/careers" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 transition-all duration-300 no-underline tracking-[0.01em]" style={{
-            fontFamily: BODY_FONT
-          }}>Careers & Community</a>
-            <a href="/compliance-portal" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 transition-all duration-300 no-underline tracking-[0.01em]" style={{
-            fontFamily: BODY_FONT
-          }}>Compliance Portal</a>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <div className="hidden sm:block">
-              <GreenButton label="Invest Now" />
-            </div>
-            <button className="lg:hidden text-white flex-shrink-0" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
-          </div>
-        </div>
-
-        {/* Mobile Menu */}
-        <AnimatePresence>
-          {mobileMenuOpen && <motion.div initial={{
-          opacity: 0,
-          height: 0
-        }} animate={{
-          opacity: 1,
-          height: 'auto'
-        }} exit={{
-          opacity: 0,
-          height: 0
-        }} className="lg:hidden bg-[#0F2419] border-t border-white/10 mt-4 overflow-hidden rounded-2xl">
-              <div className="p-6 flex flex-col gap-2">
-                <a href="/investor-hub" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 no-underline" style={{
-              fontFamily: BODY_FONT
-            }}>Investor Hub</a>
-                <a href="/enterprise-hub" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 bg-white/10 border border-white/20 hover:bg-white/10 no-underline" style={{
-              fontFamily: BODY_FONT
-            }}>Enterprise Hub</a>
-                <a href="/careers" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 no-underline" style={{
-              fontFamily: BODY_FONT
-            }}>Careers & Community</a>
-                <a href="/compliance-portal" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 no-underline" style={{
-              fontFamily: BODY_FONT
-            }}>Compliance Portal</a>
-                <div className="pt-4"><GreenButton label="Invest Now" /></div>
-              </div>
-            </motion.div>}
-        </AnimatePresence>
-      </nav>
+      <NSEZNavbar />
 
       {/* 1. HERO SECTION */}
       <section ref={heroRef} className="rounded-3xl overflow-hidden mx-1.5 sm:mx-2.5 mt-1.5 sm:mt-2.5 relative flex flex-col justify-end" style={{
@@ -856,7 +797,7 @@ export const EnterpriseHubPage = () => {
           <div className="max-w-[1372px] mx-auto">
             <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8 sm:gap-12 mb-12 sm:mb-16">
               <div className="flex flex-col gap-6 sm:gap-8">
-                <img src="/nsez-logo-white.png" alt="Nkomazi SEZ Logo" className="h-12 w-auto object-contain max-w-none" />
+                <img src="/NSEZ-logo.jpg" alt="Nkomazi SEZ Logo" className="h-12 w-auto object-contain max-w-none rounded-md" />
                 <p className="text-white/40 text-sm max-w-sm" style={{
                 fontFamily: BODY_FONT
               }}>
