@@ -3,6 +3,7 @@ import { useMemo, useEffect } from 'react';
 import { Container, Theme } from './settings/types';
 import { AirCargoPage } from './components/generated/AirCargoPage';
 import { Home2Page } from './components/generated/Home2Page';
+import { Homev2Page } from './components/generated/Homev2Page';
 import { InvestorHubPage } from './components/generated/InvestorHubPage';
 import { EnterpriseHubPage } from './components/generated/EnterpriseHubPage';
 import { CommunityPortalPage } from './components/generated/CommunityPortalPage';
@@ -25,6 +26,7 @@ function App() {
       <Routes>
         <Route path="/" element={<AirCargoPage />} />
         <Route path="/home2" element={<Home2Page />} />
+        <Route path="/homev2" element={<Homev2Page />} />
         <Route path="/investor-hub" element={<InvestorHubPage />} />
         <Route path="/enterprise-hub" element={<EnterpriseHubPage />} />
         <Route path="/careers" element={<CommunityPortalPage />} />
