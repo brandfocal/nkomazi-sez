@@ -476,29 +476,24 @@ const CounterItem = ({
     </motion.div>;
 };
 
-// ─── Nav dropdown ─────────────────────────────────────────────────────────────
+// ─── Sectors Hover Dropdown ───────────────────────────────────────────────────
 
-const DropdownMenu = ({
-  label,
-  items
-}: {
-  label: string;
-  items: string[];
-}) => {
+const SECTOR_NAV_ITEMS = ['Agro-Processing & Agriculture', 'Manufacturing', 'Green Economy', 'Logistics & Warehousing'];
+
+const SectorsHoverDropdown = () => {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
-    };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
-  }, []);
-  return <div ref={ref} className="relative">
+  return <div ref={ref} className="relative" onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
       <button className="flex items-center gap-1.5 text-white text-[15px] font-medium rounded-lg px-3 py-2.5 tracking-[0.01em] hover:bg-white/10 transition-all duration-300" style={{
-      fontFamily: BODY_FONT
-    }} onClick={() => setOpen(o => !o)} aria-haspopup="true" aria-expanded={open}>
-        {label}
+      fontFamily: BODY_FONT,
+      borderBottom: '2px solid transparent',
+      transition: 'background 0.2s ease, border-color 0.2s ease'
+    }} onMouseEnter={e => {
+      (e.currentTarget as HTMLButtonElement).style.borderBottomColor = 'rgba(200,168,75,0.6)';
+    }} onMouseLeave={e => {
+      (e.currentTarget as HTMLButtonElement).style.borderBottomColor = 'transparent';
+    }} aria-haspopup="true" aria-expanded={open}>
+        Sectors
         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 11 6" fill="none" className={`transition-transform duration-200 ${open ? 'rotate-180' : ''}`}>
           <path d="M9.63082 1.26563L6.37082 4.52563C5.98582 4.91063 5.35582 4.91063 4.97082 4.52563L1.71082 1.26562" stroke="currentColor" strokeWidth="1.5" strokeMiterlimit="10" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
@@ -519,12 +514,18 @@ const DropdownMenu = ({
       }} transition={{
         duration: 0.18,
         ease: 'easeOut'
-      }} className="absolute top-full left-0 mt-2 w-52 z-[999]">
-            <div className="bg-[#1A3C2E] rounded-xl p-2.5 flex flex-col gap-0.5" style={{
-          boxShadow: '0 20px 60px rgba(0,0,0,0.3)'
+      }} className="absolute top-full left-0 mt-2 z-[999]" style={{
+        minWidth: '240px'
+      }}>
+            <div className="bg-[#1A3C2E] rounded-[8px] p-2.5 flex flex-col gap-0.5" style={{
+          boxShadow: '0 20px 60px rgba(0,0,0,0.35)'
         }}>
-              {items.map(item => <a key={item} href="#" onClick={e => e.preventDefault()} className="block text-white text-[14px] font-medium rounded-lg px-3 py-1.5 hover:bg-white/20 transition-all duration-200 whitespace-nowrap no-underline tracking-[0.01em]" style={{
+              {SECTOR_NAV_ITEMS.map(item => <a key={item} href="#" onClick={e => e.preventDefault()} className="block text-white text-[14px] font-medium rounded-lg px-3 py-2 transition-all duration-200 whitespace-nowrap no-underline tracking-[0.01em]" style={{
             fontFamily: BODY_FONT
+          }} onMouseEnter={e => {
+            (e.currentTarget as HTMLAnchorElement).style.backgroundColor = '#E8521A';
+          }} onMouseLeave={e => {
+            (e.currentTarget as HTMLAnchorElement).style.backgroundColor = 'transparent';
           }}>{item}</a>)}
             </div>
           </motion.div>}
@@ -549,70 +550,105 @@ const StickyNav = ({
     });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-  return <motion.nav className="fixed top-0 left-0 right-0 z-[9999] px-6" initial={false} animate={scrolled ? {
-    paddingTop: '0px'
-  } : {
-    paddingTop: '20px'
-  }} transition={{
-    duration: 0.35,
-    ease: 'easeInOut'
+  const NAV_SIMPLE_LINKS = [
+    { label: 'About Us', href: '#sec-about' },
+    { label: 'Investor Hub', href: '/investor-hub' },
+    { label: 'SMME Hub', href: '/enterprise-hub' },
+    { label: 'Careers & Community', href: '/careers' },
+    { label: 'Compliance Portal', href: '/compliance-portal' },
+    { label: 'Contact', href: '/contact' }
+  ];
+  return <nav className="fixed top-0 left-0 right-0 z-[9999] px-4 sm:px-6" style={{
+    paddingTop: scrolled ? '0px' : '20px',
+    transition: 'padding 0.35s ease'
   }}>
-      <motion.div className="absolute inset-0" initial={false} animate={scrolled ? {
-      opacity: 1
-    } : {
-      opacity: 0
-    }} transition={{
-      duration: 0.35
-    }} style={{
-      background: 'rgba(15,36,25,0.96)',
-      backdropFilter: 'blur(20px)',
-      WebkitBackdropFilter: 'blur(20px)'
+      <div className="absolute inset-0" style={{
+      opacity: scrolled ? 1 : 0,
+      background: 'rgba(10, 24, 16, 0.85)',
+      backdropFilter: 'blur(16px)',
+      WebkitBackdropFilter: 'blur(16px)',
+      boxShadow: scrolled ? '0 1px 0 rgba(200,168,75,0.15)' : 'none',
+      transition: 'background 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease'
     }} />
-      <motion.div className="absolute bottom-0 left-0 right-0 h-[1px]" initial={false} animate={scrolled ? {
-      opacity: 1
-    } : {
-      opacity: 0
-    }} transition={{
-      duration: 0.35
-    }} style={{
-      background: 'linear-gradient(90deg, transparent, rgba(200,168,75,0.4), transparent)'
+      <div className="absolute bottom-0 left-0 right-0 h-[1px]" style={{
+      background: 'linear-gradient(90deg, transparent, rgba(200,168,75,0.4), transparent)',
+      opacity: scrolled ? 1 : 0,
+      transition: 'opacity 0.35s ease'
     }} />
       <div className="relative flex justify-center">
-        <motion.div className="flex items-center justify-between w-full max-w-[1372px]" animate={scrolled ? {
-        paddingTop: '14px',
-        paddingBottom: '14px'
-      } : {
-        paddingTop: '0px',
-        paddingBottom: '0px'
-      }} transition={{
-        duration: 0.35,
-        ease: 'easeInOut'
+        <div className="flex items-center justify-between w-full max-w-[1372px]" style={{
+        paddingTop: scrolled ? '14px' : '0px',
+        paddingBottom: scrolled ? '14px' : '0px',
+        transition: 'padding 0.35s ease'
       }}>
           {/* ── Logo: Nkomazi SEZ image ── */}
           <a href="/" className="flex-shrink-0 flex items-center no-underline">
-            <img src="/nsez-logo-white.png" alt="Nkomazi SEZ" className="h-12 w-auto object-contain max-w-none" />
+            <img src="/NSEZ-logo.jpg" alt="Nkomazi SEZ" className="h-8 sm:h-10 w-auto object-contain rounded-md" />
           </a>
           <div className="hidden lg:flex items-center gap-0 backdrop-blur-[26px] bg-white/10 border border-white/20 rounded-xl p-[4.6px]">
+            <a href="#sec-about" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 transition-all duration-300 no-underline tracking-[0.01em]" style={{
+            fontFamily: BODY_FONT,
+            borderBottom: '2px solid transparent',
+            transition: 'background 0.2s ease, border-color 0.2s ease'
+          }} onMouseEnter={e => {
+            (e.currentTarget as HTMLAnchorElement).style.borderBottomColor = 'rgba(200,168,75,0.6)';
+          }} onMouseLeave={e => {
+            (e.currentTarget as HTMLAnchorElement).style.borderBottomColor = 'transparent';
+          }}>About Us</a>
+            <SectorsHoverDropdown />
             <a href="/investor-hub" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 transition-all duration-300 no-underline tracking-[0.01em]" style={{
-            fontFamily: BODY_FONT
+            fontFamily: BODY_FONT,
+            borderBottom: '2px solid transparent',
+            transition: 'background 0.2s ease, border-color 0.2s ease'
+          }} onMouseEnter={e => {
+            (e.currentTarget as HTMLAnchorElement).style.borderBottomColor = 'rgba(200,168,75,0.6)';
+          }} onMouseLeave={e => {
+            (e.currentTarget as HTMLAnchorElement).style.borderBottomColor = 'transparent';
           }}>Investor Hub</a>
             <a href="/enterprise-hub" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 transition-all duration-300 no-underline tracking-[0.01em]" style={{
-            fontFamily: BODY_FONT
-          }}>Enterprise Hub</a>
+            fontFamily: BODY_FONT,
+            borderBottom: '2px solid transparent',
+            transition: 'background 0.2s ease, border-color 0.2s ease'
+          }} onMouseEnter={e => {
+            (e.currentTarget as HTMLAnchorElement).style.borderBottomColor = 'rgba(200,168,75,0.6)';
+          }} onMouseLeave={e => {
+            (e.currentTarget as HTMLAnchorElement).style.borderBottomColor = 'transparent';
+          }}>SMME Hub</a>
             <a href="/careers" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 transition-all duration-300 no-underline tracking-[0.01em]" style={{
-            fontFamily: BODY_FONT
-          }}>Careers & Community</a>
+            fontFamily: BODY_FONT,
+            borderBottom: '2px solid transparent',
+            transition: 'background 0.2s ease, border-color 0.2s ease'
+          }} onMouseEnter={e => {
+            (e.currentTarget as HTMLAnchorElement).style.borderBottomColor = 'rgba(200,168,75,0.6)';
+          }} onMouseLeave={e => {
+            (e.currentTarget as HTMLAnchorElement).style.borderBottomColor = 'transparent';
+          }}>Careers &amp; Community</a>
             <a href="/compliance-portal" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 transition-all duration-300 no-underline tracking-[0.01em]" style={{
-            fontFamily: BODY_FONT
+            fontFamily: BODY_FONT,
+            borderBottom: '2px solid transparent',
+            transition: 'background 0.2s ease, border-color 0.2s ease'
+          }} onMouseEnter={e => {
+            (e.currentTarget as HTMLAnchorElement).style.borderBottomColor = 'rgba(200,168,75,0.6)';
+          }} onMouseLeave={e => {
+            (e.currentTarget as HTMLAnchorElement).style.borderBottomColor = 'transparent';
           }}>Compliance Portal</a>
+            <a href="/contact" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 transition-all duration-300 no-underline tracking-[0.01em]" style={{
+            fontFamily: BODY_FONT,
+            borderBottom: '2px solid transparent',
+            transition: 'background 0.2s ease, border-color 0.2s ease'
+          }} onMouseEnter={e => {
+            (e.currentTarget as HTMLAnchorElement).style.borderBottomColor = 'rgba(200,168,75,0.6)';
+          }} onMouseLeave={e => {
+            (e.currentTarget as HTMLAnchorElement).style.borderBottomColor = 'transparent';
+          }}>Contact</a>
           </div>
           <div className="flex items-center gap-2">
             <div className="hidden lg:block"><GreenButton label="Invest Now" /></div>
-            <button className="lg:hidden flex items-center justify-center w-11 h-11 rounded-full bg-[#1A3C2E] text-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} aria-label="Toggle menu">
+            <button className="lg:hidden flex items-center justify-center w-11 h-11 rounded-full bg-[#1A3C2E] text-white flex-shrink-0" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} aria-label="Toggle menu">
               {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
           </div>
-        </motion.div>
+        </div>
       </div>
       <AnimatePresence>
         {mobileMenuOpen && <motion.div initial={{
@@ -628,23 +664,30 @@ const StickyNav = ({
         duration: 0.25
       }} className="relative lg:hidden mt-2 rounded-2xl bg-[#0F2419]/95 backdrop-blur-md overflow-hidden">
             <div className="p-4 flex flex-col gap-2">
-              <a href="/investor-hub" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 no-underline" style={{
-            fontFamily: BODY_FONT
-          }}>Investor Hub</a>
-              <a href="/enterprise-hub" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 no-underline" style={{
-            fontFamily: BODY_FONT
-          }}>Enterprise Hub</a>
-              <a href="/careers" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 no-underline" style={{
-            fontFamily: BODY_FONT
-          }}>Careers & Community</a>
-              <a href="/compliance-portal" className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 no-underline" style={{
-            fontFamily: BODY_FONT
-          }}>Compliance Portal</a>
+              {NAV_SIMPLE_LINKS.map(link => <a key={link.label} href={link.href} onClick={e => {
+                if (link.href === '#') {
+                  e.preventDefault();
+                }
+                setMobileMenuOpen(false);
+              }} className="text-white text-[15px] font-medium rounded-lg px-3 py-2.5 hover:bg-white/10 no-underline" style={{
+                fontFamily: BODY_FONT
+              }}>{link.label}</a>)}
+              <div className="border-t border-white/10 pt-2 mt-1">
+                <p className="text-white/40 text-xs font-semibold px-3 pb-1 uppercase tracking-widest" style={{
+              fontFamily: BODY_FONT
+            }}>Sectors</p>
+                {SECTOR_NAV_ITEMS.map(s => <a key={s} href="#" onClick={e => {
+              e.preventDefault();
+              setMobileMenuOpen(false);
+            }} className="block text-white/80 text-sm rounded-lg px-3 py-2 hover:bg-white/10 no-underline" style={{
+              fontFamily: BODY_FONT
+            }}>{s}</a>)}
+              </div>
               <div className="pt-2"><GreenButton label="Invest Now" /></div>
             </div>
           </motion.div>}
       </AnimatePresence>
-    </motion.nav>;
+    </nav>;
 };
 
 // ─── Hero — LEFT-TO-RIGHT wipe reveal for sector backgrounds ─────────────────
@@ -1972,7 +2015,7 @@ export const AirCargoPage = () => {
             <div className="flex flex-col lg:flex-row justify-between items-start gap-10 pb-12 border-b border-white/10">
               <div className="flex flex-col gap-5">
                 <div className="flex items-center gap-2.5">
-                  <img src="/nsez-logo-white.png" alt="Nkomazi SEZ" className="h-12 w-auto object-contain max-w-none" />
+                  <img src="/NSEZ-logo.jpg" alt="Nkomazi SEZ" className="h-12 w-auto object-contain max-w-none rounded-md" />
                 </div>
                 <p className="text-white/40 text-[14px] font-normal leading-6 m-0" style={{
                 fontFamily: BODY_FONT
